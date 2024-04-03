@@ -1,9 +1,20 @@
-import React from 'react'
+import Header from "./Components/Header/Header";
+import Footer from "./Components/Footer/Footer";
+import {Outlet} from "react-router-dom";
+
 
 function App() {
   return (
-    <div className='text-red-900 text-3xl'>app</div>
-  )
+    <div className="min-h-screen flex flex-wrap content-between">  
+    <div className="w-full block">
+      <Header />
+      <main>
+          <Outlet/>
+        </main>
+      <Footer />
+    </div>
+    </div>
+  );
 }
 
-export default App
+export default App;

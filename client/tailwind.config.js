@@ -3,9 +3,14 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
+    
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+      'logo_font' :['Roboto', 'sans-serif']
+      }
+    },
   },
   plugins: [],
 }
