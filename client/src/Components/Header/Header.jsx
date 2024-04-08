@@ -43,7 +43,7 @@ const menuItems = [
     setIsMenuOpen(!isMenuOpen);
   };
   return (
-    <div className="relative w-full bg-white">
+    <div className="relative bg-zinc-50 w-full ">
 
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
       <div className="inline-flex items-center space-x-2 ">
@@ -76,12 +76,14 @@ const menuItems = [
     <HiOutlineShoppingCart className="h-6 w-6 cursor-pointer" />
   </div>
   <div className="mt-4 lg:mt-0 lg:ml-4">
+    <Link to={`/signIn`} >
     <button
       type="button"
       className="rounded-md bg-[#E52A3D]  px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
     >
       Login
     </button>
+    </Link>
   </div>
 </div>
 
@@ -122,12 +124,14 @@ const menuItems = [
           </a>
         ))}
       </nav>
+      <Link to={`/signIn`} >
       <button
         type="button"
         className="p-4 mt-auto w-full text-sm font-semibold text-white bg-[#E52A3D]  hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
       >
         Sign-In
       </button>
+      </Link>
     </div>
   </div>
 )}

@@ -1,6 +1,7 @@
-import e from 'express';
+import express from 'express';
 import mongoose from 'mongoose';
 import {Schema} from 'mongoose';
+import bcryptjs from 'bcryptjs';
 
 const userSchema = new Schema({
     firstName:{
@@ -43,11 +44,27 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     },
-    forgotPasswordToken:String,
+        // forgot password token and expire
+        forgotPasswordToken:String,
         forgotPasswordExpire:Date,
+
+        // verify email token and expire
         verifyToken:String,
         verifyTokenExpire:Date,
 },{timestamps:true});
+
+
+// user creates or changes their password, we want to make sure that it's kept safe and secure
+userSchema.pre("save" , async function(next){
+    if(this.isModified("password")){
+        this.password = await bcryptjs.hash(this.password, 10);
+    }
+    else{
+        next();     
+    }
+})
+
+
 
 const User = mongoose.model('User', userSchema);
 export default User;

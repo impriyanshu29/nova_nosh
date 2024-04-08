@@ -11,6 +11,9 @@ import Menu from './Pages/Menu.jsx'
 import Order_Online from './Pages/Order_Online.jsx'
 import Reservation from './Pages/Reservation.jsx'
 import Contact from './Pages/Contact.jsx'
+import SignIn from './Pages/SignIn.jsx'
+import SignUp from './Pages/SignUp.jsx'
+import VerifyEmail from './Pages/VerifyEmail.jsx'
 
 
 const router = createBrowserRouter([
@@ -32,6 +35,14 @@ const router = createBrowserRouter([
       
       },
       {
+        path:'/signIn',
+        element:<SignIn/>
+      },
+      {
+        path:'/signUp',
+        element:<SignUp/>
+      },
+      {
         path: '*',
         element: <div>404 Not Found</div>
       },
@@ -47,6 +58,10 @@ const router = createBrowserRouter([
       {
         path:'/contact',
         element:<Contact/>
+      },
+      {
+        path:'/verifyEmail',
+        element:<VerifyEmail/>
       }
     ]
   }
