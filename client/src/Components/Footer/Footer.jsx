@@ -1,8 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaFacebook } from "react-icons/fa";
+import { FaFacebook, FaTwitter } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
+
+import { FaXTwitter } from "react-icons/fa6";
+
 import { AiFillLinkedin } from "react-icons/ai";
 
 function Footer() {
@@ -26,33 +28,31 @@ function Footer() {
                 </Link>
                 
               </div>
-              <div className="text-gray-500 text-sm">
+              <div className="text-gray-500 text-sm text-center md:text-left">
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  etiam, ut tempus quam, id tincidunt. Donec felis, ultricies nec
-                  purus.
+                Discover the magic of Nova Nosh: Where every slice of cake brings joy & every meal is a culinary adventure. Join us for a delightful dining experience i.e promises to tantalize your taste buds & leave you craving for more.
                 </p>
               </div>
               <div>
               <div>
                 <ul className="flex p-4 md:justify-start justify-center space-x-4">
                   <li>
-                    <a href="#" className="text-gray-600 hover:text-gray-900">
+                    <a href="#" className="text-gray-600 hover:text-blue-600">
                       <FaFacebook className="text-2xl" />
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-gray-600 hover:text-gray-900">
+                    <a href="#" className="text-gray-600 hover:text-red-600">
                       <FaInstagram className="text-2xl" />
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-gray-600 hover:text-gray-900">
-                      <FaGithub className="text-2xl" />
+                    <a href="#" className="text-gray-600 hover:text-gray-100">
+                      <FaXTwitter className="text-2xl" />
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-gray-600 hover:text-gray-900">
+                    <a href="#" className="text-gray-600 hover:text-blue-700">
                       <AiFillLinkedin className="text-2xl" />
                     </a>
                   </li>
@@ -106,17 +106,18 @@ function Footer() {
           </div>
           
           <div className="hidden md:block w-full p-6 md:w-1/2 lg:w-3/12">
-            <div className="h-full">
-              <h3 className="tracking-px mb-9  text-lg font-semibold uppercase text-[#E52A3D]">
-                Information
+          <div className="h-full">
+              <h3 className="tracking-px mb-6  text-base font-semibold uppercase  text-[#E52A3D]">
+              Information
               </h3>
               <ul>
-              <li className="mb-3">
+                <h1> </h1>
+                <li className="mb-3">
                   <a
                     className=" text-base font-medium text-gray-600 hover:text-gray-500"
                     href="/about"
                   >
-                About Us
+                    About Us
                   </a>
                 </li>
                 <li className="mb-3">
@@ -124,15 +125,15 @@ function Footer() {
                     className=" text-base font-medium text-gray-600 hover:text-gray-500"
                     href="/testimonial"
                   >
-                  Testimonials
+                 Testimonial
                   </a>
                 </li>
-                <li className="mb-3">
+                <li>
                   <a
                     className=" text-base font-medium text-gray-600 hover:text-gray-500"
                     href="/events"
                   >
-                  Events
+                   Events
                   </a>
                 </li>
               </ul>

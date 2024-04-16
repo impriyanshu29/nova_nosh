@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import {Schema} from 'mongoose';
 import bcryptjs from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 const userSchema = new Schema({
     firstName:{
@@ -10,7 +11,7 @@ const userSchema = new Schema({
     },
     lastName:{
         type: String,
-        required: true
+       
     },
     email:{
         type: String,
@@ -64,6 +65,29 @@ userSchema.pre("save" , async function(next){
     }
 })
 
+//to match the password
+userSchema.methods.matchPassword =async function(password){
+    return await bcryptjs.compare(password, this.password);
+}
+
+//generate refresh token
+userSchema.methods.generateRefreshToken = function(){
+    return jwt.sign(
+        {id:this._id},
+        process.env.REFRESH_TOKEN_SECRET,
+        {expiresIn: process.env.REFRESH_TOKEN_SECRET_EXPIRE}
+    )
+}
+
+//generate access token 
+userSchema.methods.generateAccessToken = function(){
+   return jwt.sign({
+        _id:this.id,
+        email:this.email,
+},process.env.ACCESS_TOKEN_SECRET,
+{expiresIn: process.env.ACCESS_TOKEN_SECRET_EXPIRE}
+)
+}
 
 
 const User = mongoose.model('User', userSchema);

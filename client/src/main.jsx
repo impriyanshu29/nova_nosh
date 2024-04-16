@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import {Provider} from 'react-redux';
+import {persistor, store} from './Redux/store.js';
+import { PersistGate } from 'redux-persist/integration/react'
+
 
 // Importing the pages
 import Home from './Pages/Home.jsx'
@@ -14,6 +18,9 @@ import Contact from './Pages/Contact.jsx'
 import SignIn from './Pages/SignIn.jsx'
 import SignUp from './Pages/SignUp.jsx'
 import VerifyEmail from './Pages/VerifyEmail.jsx'
+import ForgotPassword from './Pages/ForgotPassword.jsx'
+import ResetPassword from './Pages/ResetPassword.jsx'
+import Updatepassword from './Pages/Updatepassword.jsx'
 
 
 const router = createBrowserRouter([
@@ -62,6 +69,18 @@ const router = createBrowserRouter([
       {
         path:'/verifyEmail',
         element:<VerifyEmail/>
+      },
+      {
+        path:'/forgotPassword',
+        element:<ForgotPassword/>
+      },
+      {
+        path:'/resetPassword',
+        element:<ResetPassword/>
+      },
+      {
+        path:'/updatePassword',
+        element:<Updatepassword/>
       }
     ]
   }
@@ -70,8 +89,13 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root'))
 .render(
   <React.StrictMode>
+    <PersistGate persistor={persistor}>
+    <Provider store={store}>
     <RouterProvider router={router}/>
+    </Provider>
+    </PersistGate>
   </React.StrictMode>
+  
 )
 
 

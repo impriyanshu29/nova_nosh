@@ -1,8 +1,7 @@
 import React from "react";
 import Delivery from "../assets/Images/DI.png";
 import { Link } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
-import { FaFacebook } from "react-icons/fa6";
+import O_auth from "../Components/O-auth/O_auth.jsx";
 import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
@@ -40,7 +39,7 @@ function SignUp() {
   
       const data = await res.json();
       setMessage(data.message);
-      setLoading(false);
+      
   
       // Hide success message after 3 seconds
       setTimeout(() => {
@@ -52,6 +51,7 @@ function SignUp() {
         // Redirect to sign-in page
         navigate('/signIn');
       }, 6000);
+      setLoading(false);
   
     } catch (error) {
       setError(error);
@@ -62,8 +62,8 @@ function SignUp() {
 
 
   return (
-    <section className="  lg:p-16 p-4 py-16 md:py-12  bg-zinc-50 ">
-      <div className="   grid grid-cols-1 px-10 lg:grid-cols-2 rounded-lg ">
+    <section className="  lg:p-16 p-2 py-16 md:py-12  bg-zinc-50 ">
+      <div className="   grid grid-cols-1 px-8 lg:grid-cols-2 rounded-lg ">
         <div className="relative hidden lg:block md:flex md:justify-center">
           <div className="absolute inset-0 mb-28 flex items-center justify-center">
             <img
@@ -207,11 +207,7 @@ function SignUp() {
               <p className="text-sm text-center text-gray-600">
                 Or Sign Up with
               </p>
-              <div className="flex justify-center gap-6">
-                <FaGoogle className="h-7 w-7 text-[#DB4437]" />
-
-                <FaFacebook className="h-7 w-7 text-[#2563EB]" />
-              </div>
+              <O_auth />
             </div>
           </div>
         </div>

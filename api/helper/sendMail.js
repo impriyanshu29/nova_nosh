@@ -12,7 +12,7 @@ export const sendEmail = async ({email,emailType,userId}) =>{
             const userIdString = String(userId); 
             const hashToken = await bcryptjs.hash(userIdString, 10); 
             
-            if(emailType === "forgotPassword"){
+            if(emailType === "resetPassword"){
                 await User.findByIdAndUpdate(userId, {
                   $set:{
                     forgotPasswordToken: hashToken,
@@ -110,11 +110,11 @@ export const sendEmail = async ({email,emailType,userId}) =>{
   <body>
     <div class="container">
       <div class="header">
-        <h1>${emailType === "forgotPassword" ? 'Reset Password' : 'Verify Email'}</h1>
+        <h1>${emailType === "resetPassword" ? 'Reset Password' : 'Verify Email'}</h1>
         <p>Sent by <a href="mailto:${process.env.SENDER_EMAIL}" style="color: #fff;">${process.env.COMPANY_NAME}</a></p>
       </div>
       <div class="content">
-        <p>Click <a href="${emailType === "forgotPassword" ? `${process.env.DOMAIN}/resetPassword?token=${hashToken}` : `${process.env.DOMAIN}/verifyEmail?token=${hashToken}`}">here</a> to ${emailType === "forgotPassword" ? 'reset your password' : 'verify your email'}.</p>
+        <p>Click <a href="${emailType === "resetPassword" ? `${process.env.DOMAIN}/resetPassword?token=${hashToken}` : `${process.env.DOMAIN}/verifyEmail?token=${hashToken}`}">here</a> to ${emailType === "resetPassword" ? 'reset your password' : 'verify your email'}.</p>
         <span >Link is valid for 20 minutes.</span>
       </div>
       <div class="signature">

@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
-function VerifyEmail() {
+
+function ResetPassword() {
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get("token");
   const [message, setMessage] = useState(" ");
@@ -11,32 +12,40 @@ function VerifyEmail() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const verifyEmail = async (e) => {
+  const resetPassword = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       console.log(token);
       setError(null);
-      const res = await fetch(`/api/auth/verifyEmail?token=${token}`);
+      const res = await fetch(`/api/auth/resetPassword?token=${token}`);
 
       if (!res.ok) {
         const errorData = await res.json();
+
         setError(errorData.message);
         setLoading(false);
         return;
       }
 
+     
+      
       const data = await res.json();
-      setMessage(data.message);
+
+      console.log(data);
+      console.log(data.message.loggedUser)
+      
+      
+      setMessage(data.status);
 
       setTimeout(() => {
         // Redirect to sign-in page
-        navigate("/signIn");
+        navigate(`/updatePassword?token=${token}&email=${data.message.loggedUser.email}`);
       }, 2000);
 
       setLoading(false);
     } catch (error) {
-      setError(error);
+      setError(error.message);
     }
   };
 
@@ -45,14 +54,15 @@ function VerifyEmail() {
       <div className="max-w-md w-full  bg-white shadow-xl z-10 rounded-xl py-7 px-11 overflow-hidden">
         <div className=" w-full ">
           <h1 className="text-3xl font-bold text-center mb-6 pb-4 text-gray-700">
-            Delicious delights are just a click away!
+          Your Food Adventure Awaits. Recover Your Login!
           </h1>
         </div>
         <div className="px-6 ">
           <p className="text-base text-center text-gray-600 mb-6">
-            Tap <span className="font-semibold text-gray-700">Verify</span>{" "}
-            below to indulge in the mouthwatering goodness that awaits. We're
-            excited to share our flavorful creations with you!
+         
+            We understand, cravings can't wait! So don't let a forgotten password stop you from satisfying your taste buds.
+           
+           
           </p>
           <p className="text-base text-center text-gray-600 mb-6">
             If you haven't received the email, please check your spam folder.
@@ -60,7 +70,7 @@ function VerifyEmail() {
         </div>
         <div className=" px-6 py-4 flex justify-center">
           <button
-            onClick={verifyEmail}
+            onClick={resetPassword}
             className="inline-flex w-full items-center justify-center rounded-md bg-[#E52A3D] px-4 py-2.5 font-semibold leading-7 text-white hover:opacity-90 transition duration-300"
             disabled={loading}
           >
@@ -79,4 +89,4 @@ function VerifyEmail() {
     </section>
   );
 }
-export default VerifyEmail;
+export default ResetPassword;
