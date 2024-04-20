@@ -20,14 +20,16 @@ function O_auth() {
         provider.setCustomParameters({ prompt: 'select_account' });
         try {
             const data = await signInWithPopup(auth, provider);
-
+           
+            
             const res = await fetch('/api/auth/google',{ 
                 method:'POST',
                 headers:{
                   'Content-Type':'application/json'
                 },
                 body:JSON.stringify({
-                  firstName:data.user.displayName,
+                  
+                  name:data.user.displayName,
                   email:data.user.email,
                   googlePhoto:data.user.photoURL, 
                   isVerified:data.user.emailVerified,

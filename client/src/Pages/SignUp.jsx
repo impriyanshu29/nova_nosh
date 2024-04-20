@@ -90,42 +90,33 @@ function SignUp() {
             </p>
             <form onSubmit={handleSubmit} className="mt-8">
               <div className="space-y-5">
-                <div className="flex gap-4">
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="firstName"
-                      className="text-base font-medium text-gray-900"
-                    >
-                      First Name
-                    </label>
-                    <div className="mt-2">
-                      <input
-                        className="h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                        type="text"
-                        id="firstName"
-                        onChange={handleChanges}
-                        placeholder="First Name"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="lastName"
-                      className="text-base font-medium text-gray-900"
-                    >
-                      Last Name
-                    </label>
-                    <div className="mt-2">
-                      <input
-                        className="h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                        type="text"
-                        id="lastName"
-                        onChange={handleChanges}
-                        placeholder="Last Name"
-                      />
-                    </div>
-                  </div>
-                </div>
+              <div className="grid grid-cols-2 md:gap-16 pb-2 md:pb-0 gap-4">
+            <div className="col-span-1">
+              <label htmlFor="firstName" className="block text-sm my-3 font-semibold text-gray-700">
+                First Name
+              </label>
+              <input
+                id="firstName"
+                type="text"
+                className="input-field border hover:shadow-md hover:rounded-xl px-4 py-2 bg-transparent rounded-md w-full text-gray-600 focus:outline-none"
+                placeholder="First Name"
+                onChange={handleChanges}
+              />
+            </div>
+            <div className="col-span-1">
+              <label htmlFor="lastName" className="block text-sm my-3  font-semibold text-gray-700">
+                Last Name
+              </label>
+              <input
+                id="lastName"
+                type="text"
+                className="input-field border hover:shadow-md hover:rounded-xl bg-transparent text-gray-600 px-4 py-2 rounded-md w-full focus:outline-none"
+              
+                placeholder="Last Name"
+                onChange={handleChanges}
+              />
+            </div>
+          </div>
                 <div>
                   <label
                     htmlFor=""

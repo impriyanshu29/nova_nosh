@@ -39,7 +39,7 @@ function SignIn() {
       navigate('/');
 
     } catch (error) {
-      dispatch(signInFail(error.message)); // Pass error message instead of entire error object
+      dispatch(signInFail(error.message)); 
     }
   }
 

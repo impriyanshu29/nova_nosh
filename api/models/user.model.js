@@ -25,6 +25,9 @@ const userSchema = new Schema({
         type: String,
        
     },
+    gender:{
+        type:String,
+    },
     phone:{
         type: Number,
        

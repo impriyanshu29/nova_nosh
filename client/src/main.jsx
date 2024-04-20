@@ -22,6 +22,9 @@ import ForgotPassword from './Pages/ForgotPassword.jsx'
 import ResetPassword from './Pages/ResetPassword.jsx'
 import Updatepassword from './Pages/Updatepassword.jsx'
 
+import Private_Route from './Components/PrivateRoute/Private_Route.jsx'
+import Dashboard from './Components/Dashbaord/Dashboard.jsx'
+import Profile from './Pages/Profile.jsx'
 
 const router = createBrowserRouter([
   {
@@ -81,6 +84,27 @@ const router = createBrowserRouter([
       {
         path:'/updatePassword',
         element:<Updatepassword/>
+      },
+
+      {
+        path:'/dashBoard',
+        element:<Private_Route/>,
+        children:[
+          {
+            index:true,
+            element:<Dashboard/>
+          }
+        ]
+      },
+      {
+        path:'/account',
+        element:<Private_Route/>,
+        children:[
+          {
+            index:true,
+            element:<Profile/>
+          }
+        ]
       }
     ]
   }

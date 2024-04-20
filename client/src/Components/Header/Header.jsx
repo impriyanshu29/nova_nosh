@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -8,9 +6,19 @@ import { IoMdMenu } from "react-icons/io";
 import { MdOutlineRestaurantMenu } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { BsPersonCircle } from "react-icons/bs";
-import { BsBoxArrowUpRight } from "react-icons/bs";
-import { BsPencilSquare } from "react-icons/bs";
+import { IoIosLogOut } from "react-icons/io";
+import { IoPersonOutline } from "react-icons/io5";
+
+import { GoPackage } from "react-icons/go";
+
 import { BsPencil } from "react-icons/bs";
+import { signOutSuccess } from "../../Redux/User-Slice/userSlice";
+import {
+  updateFail,
+  updateSuccess,
+  clearError,
+} from "../../Redux/User-Slice/userSlice";
+import { useDispatch } from "react-redux";
 
 const menuItems = [
   {
@@ -27,7 +35,7 @@ const menuItems = [
     href: "/menu",
   },
   {
-    name: "Order Online",
+    name: "Order ",
     href: "/order",
   },
   {
@@ -48,7 +56,46 @@ function Header() {
   };
   const [showDropdown, setShowDropdown] = React.useState(false);
 
+  const [error, setError] = useState(" ");
+
   const { currentUser } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
+  const handleLogout = async () => {
+    try {
+      const refreshToken = currentUser?.message?.refreshToken || null;
+      const refreshRes = await fetch(`/api/auth/refreshToken/${refreshToken}`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const dataRefresh = await refreshRes.json();
+      if (!refreshRes.ok) {
+        const data = await refreshRes.json();
+        dispatch(updateFail(data.error));
+
+        setTimeout(() => {
+          dispatch(clearError());
+        }, 4000);
+        return;
+      }
+
+      dispatch(updateSuccess(dataRefresh));
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        dispatch(signOutSuccess());
+        window.location.href = "/";
+      } else {
+        setError(error.message);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+  };
   return (
     <div className="relative bg-zinc-50 w-full ">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
@@ -93,7 +140,7 @@ function Header() {
                 >
                   {currentUser.message.user.image ? (
                     <img
-                      src={currentUser.message.user.coverImage}
+                      src={currentUser.message.user.image}
                       alt="User Cover Image"
                       className="w-10 h-10 rounded-full object-cover"
                     />
@@ -111,40 +158,19 @@ function Header() {
                     }}
                   >
                     <div className="p-4 flex flex-col items-center">
-                      <div className="flex gap-4 items-center mb-4">
-                        {currentUser.message.user.image ? (
-                          <img
-                            src={currentUser.message.user.coverImage}
-                            alt="User Cover Image"
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
-                        ) : (
-                          <BsPersonCircle className="h-10 w-10 text-gray-400 rounded-full" />
-                        )}
-                        <div>
-                          <span className="block text-lg font-semibold text-gray-800">
-                            {currentUser.message.user.firstName}{" "}
-                            {currentUser.message.user.lastName}
-                          </span>
-                          <span className="block text-sm text-gray-600">
-                            {currentUser.message.user.email}
-                          </span>
-                        </div>
-                      </div>
-
                       <div className="space-y-2">
                         <Link
-                          to="/dashboard?tab=profile"
+                          to="/account?pro=profile"
                           className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
                         >
-                          <BsPencilSquare className="text-lg mx-3" />
+                          <IoPersonOutline className="text-xl mx-3" />
                           Profile
                         </Link>
 
                         {/* Conditionally render admin link */}
                         {currentUser.message.user.isAdmin && (
                           <Link
-                            to="/dashboard?tab=updatepost"
+                            to="/profile"
                             className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2 border-bottom border-gray-200"
                           >
                             <BsPencil className="text-lg mx-3" />
@@ -152,11 +178,20 @@ function Header() {
                           </Link>
                         )}
 
+                        <Link
+                          to="/order"
+                          className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
+                        >
+                          <GoPackage className="text-xl mx-3" />
+                          Orders
+                        </Link>
+
                         <button
                           type="button"
+                          onClick={handleLogout}
                           className="text-red-500 hover:text-red-700 p-2 flex items-center space-x-2"
                         >
-                          <BsBoxArrowUpRight className="text-lg mx-3" />
+                          <IoIosLogOut className="text-2xl mx-3" />
                           Logout
                         </button>
                       </div>
@@ -168,7 +203,7 @@ function Header() {
               <Link to="/signIn">
                 <button
                   type="button"
-                  className="rounded-md px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 focus:outline-none focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-white font-semibold text-sm"
+                  className="rounded-md px-4 py-2 bg-[#E52A3D] text-white hover:bg-black hover shadow-lg focus:outline-none focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-white font-semibold text-sm"
                 >
                   Sign In
                 </button>
@@ -177,6 +212,7 @@ function Header() {
           </div>
         </div>
 
+        {/* Mobile View */}
         <div className="lg:hidden">
           <IoMdMenu onClick={toggleMenu} className="h-6 w-6 cursor-pointer" />
         </div>
@@ -185,11 +221,10 @@ function Header() {
             <div className="bg-black opacity-25 fixed inset-0"></div>
             <div className="relative flex flex-col w-64 bg-white">
               <div className="flex items-center justify-between p-4 bg-gray-100">
-
                 {/* Logo */}
 
                 {currentUser ? (
-                 
+                  <Link to={"/account?pro=profile"}>
                     <div className="flex gap-4 items-center ">
                       {currentUser.message.user.image ? (
                         <img
@@ -210,7 +245,7 @@ function Header() {
                         </span>
                       </div>
                     </div>
-                  
+                  </Link>
                 ) : (
                   <Link
                     to="/"
@@ -234,30 +269,47 @@ function Header() {
                     aria-hidden="true"
                   />
                 </button>
-
               </div>
               <nav className="flex-1 p-4 overflow-y-auto">
                 {menuItems.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.href}
                     className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
+                {currentUser ? (
+                  <>
+                    <Link
+                      key="wishlist"
+                      to="/account?pro=wishlist"
+                      className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
+                    >
+                     Wishlist
+                    </Link>
+                    <Link
+                      key="address"
+                      to="/account?pro=address"
+                      className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
+                    >
+                      My Address
+                    </Link>
+                  </>
+                ) : null}
               </nav>
+
               {/* Sign in button */}
               <div>
                 {currentUser ? (
-                  <Link to={`/signIn`}>
-                    <button
-                      type="button"
-                      className="p-4 mt-auto w-full text-sm font-semibold text-white bg-[#E52A3D]  hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                    >
-                      Logout
-                    </button>
-                  </Link>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="p-4 mt-auto w-full text-sm font-semibold text-white bg-[#E52A3D]  hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  >
+                    Logout
+                  </button>
                 ) : (
                   <Link to={`/signIn`}>
                     <button
