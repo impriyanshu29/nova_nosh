@@ -23,7 +23,7 @@ import ResetPassword from './Pages/ResetPassword.jsx'
 import Updatepassword from './Pages/Updatepassword.jsx'
 
 import Private_Route from './Components/PrivateRoute/Private_Route.jsx'
-import Dashboard from './Components/Dashbaord/Dashboard.jsx'
+import Dashboard from './Pages/Dashboard.jsx'
 import Profile from './Pages/Profile.jsx'
 
 const router = createBrowserRouter([

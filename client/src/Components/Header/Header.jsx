@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { BsPersonCircle } from "react-icons/bs";
 import { IoIosLogOut } from "react-icons/io";
 import { IoPersonOutline } from "react-icons/io5";
-
+import { MdDashboardCustomize } from "react-icons/md";
 import { GoPackage } from "react-icons/go";
 
 import { BsPencil } from "react-icons/bs";
@@ -19,6 +19,7 @@ import {
   clearError,
 } from "../../Redux/User-Slice/userSlice";
 import { useDispatch } from "react-redux";
+import { current } from "@reduxjs/toolkit";
 
 const menuItems = [
   {
@@ -151,7 +152,7 @@ function Header() {
 
                 {showDropdown && (
                   <div
-                    className="absolute top-full right-0 z-50 bg-white shadow-md rounded-md w-auto overflow-hidden transition-all duration-200 ease-in-out transform translate-y-1"
+                    className="absolute top-full right-0 z-50 bg-white shadow-md rounded-md w-auto overflow-hidden transition-all duration-200 ease-in-out transform translate-y-1 "
                     style={{
                       opacity: showDropdown ? 1 : 0,
                       pointerEvents: showDropdown ? "auto" : "none",
@@ -159,32 +160,33 @@ function Header() {
                   >
                     <div className="p-4 flex flex-col items-center">
                       <div className="space-y-2">
-                        <Link
-                          to="/account?pro=profile"
-                          className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
-                        >
-                          <IoPersonOutline className="text-xl mx-3" />
-                          Profile
-                        </Link>
-
-                        {/* Conditionally render admin link */}
-                        {currentUser.message.user.isAdmin && (
+                        {currentUser.message.user.isAdmin ? (
                           <Link
-                            to="/profile"
-                            className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2 border-bottom border-gray-200"
+                            to="/dashboard?tab=dashboards"
+                            className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
                           >
-                            <BsPencil className="text-lg mx-3" />
-                            Post
+                            <MdDashboardCustomize className="text-xl" />
+                            <span className="whitespace-nowrap">Dashboard</span>
+                          </Link>
+                        ) : (
+                          <Link
+                            to="/account?pro=profile"
+                            className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
+                          >
+                            <IoPersonOutline className="text-xl mx-3" />
+                            Profile
                           </Link>
                         )}
 
-                        <Link
-                          to="/order"
-                          className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
-                        >
-                          <GoPackage className="text-xl mx-3" />
-                          Orders
-                        </Link>
+                        {currentUser.message.user.isAdmin ? null : (
+                          <Link
+                            to="/order"
+                            className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
+                          >
+                            <GoPackage className="text-xl mx-3" />
+                            Orders
+                          </Link>
+                        )}
 
                         <button
                           type="button"
@@ -287,7 +289,7 @@ function Header() {
                       to="/account?pro=wishlist"
                       className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
                     >
-                     Wishlist
+                      Wishlist
                     </Link>
                     <Link
                       key="address"
