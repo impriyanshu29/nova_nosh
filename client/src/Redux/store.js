@@ -3,10 +3,11 @@ import userReducer from './User-Slice/userSlice'
 import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import { persistStore } from 'redux-persist';
-
+import addressReducer from './User-Slice/addressSlice';
 
 const rootReducer = combineReducers({
   user: userReducer,
+  address : addressReducer
 })
 
 const persistConfig = {

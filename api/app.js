@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser'
 // import routes-------------------------------
 import testRoute from './routes/test.routes.js';
 import authRoute from './routes/auth.routes.js';
-
+import addressRoute from './routes/address.routes.js';
 
 const app = express();
 
@@ -15,6 +15,7 @@ app.use(express.json());    // This is a built-in middleware function in Express
 app.use(cookieParser());
 app.use('/api/test', testRoute);
 app.use('/api/auth',authRoute);
+app.use('/api/add',addressRoute);
 export default app;
 
 

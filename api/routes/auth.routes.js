@@ -15,7 +15,7 @@ router.get('/resetPassword',resetPassword);
 router.post('/updatePassword',updatePassword);
 router.post('/logout',verifyJWT,logOut )
 router.post('/updateProfile/:userId',verifyJWT,updateProfile)
-router.post('/refreshToken/:refreshToken',refreshAccessToken);
+router.get('/refreshToken',refreshAccessToken);
 router.delete('/deleteAccount/:userId',verifyJWT,deleteUser)
 
 

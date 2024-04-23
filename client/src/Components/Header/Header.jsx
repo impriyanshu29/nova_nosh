@@ -64,9 +64,9 @@ function Header() {
   const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
-      const refreshToken = currentUser?.message?.refreshToken || null;
-      const refreshRes = await fetch(`/api/auth/refreshToken/${refreshToken}`, {
-        method: "POST",
+      
+      const refreshRes = await fetch(`/api/auth/refreshToken `,{
+        method: "GET",
         credentials: "include",
       });
 
