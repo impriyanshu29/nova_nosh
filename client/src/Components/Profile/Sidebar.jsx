@@ -126,6 +126,7 @@ function Sidebar() {
             </div>
 
             {/* -------------------------------------------------------------------------------------------  */}
+            { currentUser.message.user.isAdmin ? null:(
             <div className="space-y-3 ">
               <label className="px-3 flex items-center gap-2  text-sm font-semibold uppercase text-gray-900">
                 <FaFolderOpen className="h-5 w-5" aria-hidden="true" />
@@ -156,6 +157,8 @@ function Sidebar() {
                 <span className="mx-8 text-sm font-medium">My Reviews </span>
               </NavLink>
             </div>
+            )}
+            {/* -------------------------------------------------------------------------------------------  */}
           </nav>
         </div>
       </div>

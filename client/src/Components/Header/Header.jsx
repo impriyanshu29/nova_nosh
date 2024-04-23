@@ -226,39 +226,68 @@ function Header() {
                 {/* Logo */}
 
                 {currentUser ? (
-                  <Link to={"/account?pro=profile"}>
-                    <div className="flex gap-4 items-center ">
-                      {currentUser.message.user.image ? (
-                        <img
-                          src={currentUser.message.user.image}
-                          alt="User Cover Image"
-                          className="w-7 h-7 rounded-full object-cover"
-                        />
-                      ) : (
-                        <BsPersonCircle className="h-6 w-6 text-gray-400 rounded-full" />
-                      )}
-                      <div>
-                        <span className="block text-sm  font-semibold text-gray-800">
-                          {currentUser.message.user.firstName}{" "}
-                          {currentUser.message.user.lastName}
-                        </span>
-                        <span className="block text-xs text-gray-600">
-                          {currentUser.message.user.email}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ) : (
-                  <Link
-                    to="/"
-                    className={`whitespace-nowrap self-center font-logo_font text-black text-sm sm:text-xl font-semibold`}
-                  >
-                    <span className="px-2 py-1 font-logo_font   text-[#E52A3D] rounded-lg">
-                      NOVA
-                    </span>
-                    NOSH
-                  </Link>
-                )}
+  currentUser.message.user.isAdmin ? (
+    <Link to="/dashboard?tab=dashboards">
+      <div className="flex gap-2 mr-2 items-center">
+        {currentUser.message.user.image ? (
+          <img
+            src={currentUser.message.user.image}
+            alt="User Cover Image"
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        ) : (
+          <BsPersonCircle className="h-6 w-6 text-gray-400 rounded-full" />
+        )}
+        <div>
+          <span className="block text-sm font-semibold text-gray-800">
+            {currentUser.message.user.firstName}{" "}
+            {currentUser.message.user.lastName}
+          </span>
+          <span className="block text-xs text-gray-600">
+            {currentUser.message.user.email}
+          </span>
+        </div>
+      </div>
+    </Link>
+  ) : (
+    <Link
+      to="/account?pro=profile"
+      
+    >
+      <div className="flex gap-2 items-center ">
+        {currentUser.message.user.image ? (
+          <img
+            src={currentUser.message.user.image}
+            alt="User Cover Image"
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        ) : (
+          <BsPersonCircle className="h-7 w-7 text-gray-400 rounded-full" />
+        )}
+        <div>
+          <span className="block text-sm font-semibold text-gray-800">
+            {currentUser.message.user.firstName}{" "}
+            {currentUser.message.user.lastName}
+          </span>
+          <span className="block text-xs text-gray-600">
+            {currentUser.message.user.email}
+          </span>
+        </div>
+      </div>
+    </Link>
+  )
+) : (
+  <Link
+    to="/"
+    className={`whitespace-nowrap self-center font-logo_font text-black text-sm sm:text-xl font-semibold`}
+  >
+    <span className="px-2 py-1 font-logo_font text-[#E52A3D] rounded-lg">
+      NOVA
+    </span>
+    NOSH
+  </Link>
+)}
+
 
                 <button
                   type="button"
