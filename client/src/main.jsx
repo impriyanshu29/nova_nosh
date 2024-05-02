@@ -42,7 +42,13 @@ const router = createBrowserRouter([
       },
       {
         path: '/menu',
-        element: <Menu />
+        element:<Private_Route/>,
+        children:[
+          {
+            index:true,
+            element:<Menu/>
+          }
+        ]
       
       },
       {

@@ -23,20 +23,33 @@ export const addToWhistList = asyncHandler(async (req, res) => {
             throw new ApiError(404, "Menu not found");
         }
 
+       
+
         const menuInWhistList = await WhistList.findOne({ user: userId, menu: menuId });
 
-        console.log(menuInWhistList);
+        
         if(menuInWhistList){
             const result = await WhistList.deleteOne({ user: userId, menu: menuId });
             return res.status(200).json(new apiResponse(200, "Menu removed from whistlist successfully"));
         }
+        const userWhist = await WhistList.findOne({ user: userId });
 
-        WhistList.create({
-            user: userId,
-            menu: menuId
-        });
+        if (!userWhist) {
+            await WhistList.create({
+                user: userId,
+                menu: menuId
+            });
+        }
 
-        return res.status(201).json(new apiResponse(201, "Menu added to whistlist successfully"));
+            else {
+                userWhist.menu.push(menuId);
+                await userWhist.save();
+            }
+
+            return res.status(201).json(new apiResponse(201, "Menu added to whistlist successfully"));
+        
+        
+       
     }
     catch (error) {
         throw new ApiError(500, error.message);
@@ -47,24 +60,24 @@ export const  getWhistList = asyncHandler(async(req,res)=>{
     try {
         
         const userId = req.params.userId;
-        const userWishlist = await WhistList.findOne({ user: userId }).select('menus');
+        const userWishlist = await WhistList.findOne({ user: userId }).select('menu');
+
+       
         
-        console.log("User Wishlist:", userWishlist); 
-        
-        // Validate that 'menus' is an array
-        if (!userWishlist || !Array.isArray(userWishlist.menus)) {
-          throw new Error("Wishlist is empty or 'menus' is not an array");
+        if (!userWishlist || !Array.isArray(userWishlist.menu)) {
+          throw new ApiError("Wishlist is empty or 'menus' is not an array");
         }
-        
-        // Now you should have the correct array of menu IDs
-        const menuIds = userWishlist.menus; // Should be an array
-        
-        // Query all menus with the given IDs
+        const menuIds = userWishlist.menu; 
         const menus = await Menu.find({ _id: { $in: menuIds } });
-        
-        console.log("Menus:", menus); // Log the menus to confirm the results
-        
-        return res.status(200).json({ menus });
+        return res
+        .status (200)
+        .json(new apiResponse(
+            200,
+            {
+                menus
+            },
+            "Whistlist found successfully"
+        ))
 
         
 
