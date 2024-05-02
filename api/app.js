@@ -5,7 +5,8 @@ import cookieParser from 'cookie-parser'
 import testRoute from './routes/test.routes.js';
 import authRoute from './routes/auth.routes.js';
 import addressRoute from './routes/address.routes.js';
-
+import menuRoute from './routes/menu.routes.js';
+import whistListRouter from './routes/whistList.routes.js'
 const app = express();
 
 app.use(express.json());    // This is a built-in middleware function in Express. It parses incoming requests with JSON payloads and is based on body-parser.
@@ -16,6 +17,8 @@ app.use(cookieParser());
 app.use('/api/test', testRoute);
 app.use('/api/auth',authRoute);
 app.use('/api/add',addressRoute);
+app.use('/api/menu', menuRoute)
+app.use('/api/whistList', whistListRouter)
 export default app;
 
 

@@ -35,7 +35,7 @@ function SidebarDashboard() {
     }
   }, [location.search]);
 
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     
@@ -46,7 +46,7 @@ function SidebarDashboard() {
     <>
       {currentUser.message.user.isAdmin && (
         <div
-          className="lg:hidden flex  bg-zinc-50 items-center justify-center gap-2"
+          className="md:hidden flex  bg-zinc-50 items-center justify-center gap-2"
           onClick={toggleMenu}
         >
           <h2 className="text-base font-sans bg-zinc-50 font-semibold">
@@ -64,12 +64,11 @@ function SidebarDashboard() {
         </div>
       )}
 
-      {isMenuOpen &&(
-        <aside
-          className={`bg-zinc-50 flex h-screen w-64 flex-col overflow-y-auto px-2 py-4 pb-8 ${
-            currentUser.message.user.isAdmin ? "lg:block" : "hidden"
-          }`}
-        >
+   
+<aside className={` ${isMenuOpen ? '' : 'hidden'} bg-zinc-50 flex h-screen w-64 flex-col overflow-y-auto px-2 py-4 pb-8 ${currentUser.message.user.isAdmin ? 'md:flex' : 'hidden'}`}>
+
+
+
           <div className="p-6 flex flex-1 flex-col bg-white shadow-2xl border  rounded-lg justify-between">
             <nav className="-mx-3 space-y-6 ">
               {/* Dashboard */}
@@ -349,7 +348,7 @@ function SidebarDashboard() {
             </div>
           </div>
         </aside>
-      )}
+    
     </>
   );
 }

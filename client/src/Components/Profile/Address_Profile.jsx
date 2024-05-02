@@ -29,52 +29,55 @@ function Address_Profile() {
   );
   const dispatch = useDispatch();
   const [updateMessage, setUpdateMessage] = useState("");
-useEffect(()=>{
-try {
-    if(myParam && myParam === 'address'){
-        
-        const fetchAddress = async () =>{
-            
-            const refreshRes = await fetch(`/api/auth/refreshToken`, {
-                method: "GET",
-                credentials: "include",
-            });
-            const dataRefresh = await refreshRes.json();
-            if (!refreshRes.ok) {
-                dispatch(updateFail(dataRefresh.error));
-                setUpdateMessage("Please clear cookies and sign in again");
-                setTimeout(() => {
-                    setUpdateMessage(null);
-                    dispatch(clearError());
-                }, 4000);
-                return;
-            }
-            dispatch(updateSuccess(dataRefresh));
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            if (myParam && myParam === 'address') {
+                
+                const refreshRes = await fetch(`/api/auth/refreshToken`, {
+                    method: "GET",
+                    credentials: "include",
+                });
 
-         
-            const res = await fetch(`/api/add/getAddress`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ user_id: currentUser?.message?.user?._id }),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                dispatch(addAddressSuccess(data));
-            } else {
-                dispatch(addAddressFail(data.message));
+                const dataRefresh = await refreshRes.json();
+                if (!refreshRes.ok) {
+                    dispatch(updateFail(dataRefresh.error));
+                    setUpdateMessage("Please clear cookies and sign in again");
+                    setTimeout(() => {
+                        setUpdateMessage(null);
+                        dispatch(clearError());
+                    }, 4000);
+                    return;
+                }
+
+                dispatch(updateSuccess(dataRefresh));
+                const userId = currentUser?.message?.user?._id;
+                dispatch(addAddressStart());
+                const res = await fetch(`/api/add/getAddress?userId=${userId}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    dispatch(addAddressSuccess(data));
+                } else {
+                    dispatch(addAddressFail(data.message));
+                }
             }
+        } catch (error) {
+            dispatch(addAddressFail(error.message));
+            setTimeout(() => {
+                dispatch(clearError());
+            }, 4000);
         }
-        fetchAddress();
-    }
-} catch (error) {
-    dispatch(addAddressFail(error.message));
-    setTimeout(() => {
-        dispatch(clearError());
-    }, 4000);
-}
-},[location.search,myParam ])
+    };
+
+    fetchData();
+}, [location.search, myParam, dispatch]);
+
+
 
   const handlepinCodeChange = (e) => {
     setPinCode(e.target.value);
@@ -85,8 +88,8 @@ try {
     try {
       dispatch(addAddressStart());
         
-      
-      const refreshRes = await fetch(`/api/auth/refreshToken`, {
+      const refreshToken = currentUser.message.refreshToken;
+      const refreshRes = await fetch(`/api/auth/refreshToken?refresh=${refreshToken}`, {
         method: "GET",
         credentials: "include",
       });

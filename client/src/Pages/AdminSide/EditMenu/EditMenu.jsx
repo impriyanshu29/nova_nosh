@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import {
@@ -17,7 +17,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import { app } from "../../../Firebase/firebase.js";
 import { set } from "mongoose";
-function CreateMenu() {
+
+
+function EditMenu() {
   const [imageData, setImageData] = useState(null);
   const [imageFileURL, setImageFileURL] = useState(null);
   const [updateMessage, setUpdateMessage] = useState("");
@@ -29,6 +31,42 @@ function CreateMenu() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
+  const [menuData, setMenuData] = useState({}); 
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const tabFromUrl = urlParams.get("tab");
+
+  useEffect(() => {
+    try {
+      if (
+        tabFromUrl &&
+        tabFromUrl.startsWith("editMenu-") &&
+        tabFromUrl.length > "editMenu-".length
+      ) {
+        const menuId = tabFromUrl.slice("editMenu-".length);
+      
+
+        const fetchMenu = async () => {
+          const res = await fetch(`/api/menu/getMenu?_id=${menuId}`);
+          const data = await res.json();
+        
+
+          if (!res.ok) {
+           setError(data.message);
+          } else {
+            setMenuData(data.message.menu.menus[0]);
+          }
+
+          
+        };
+
+        fetchMenu();
+        console.log("Menu Data", menuData);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+  }, [location.search]);
 
   const handleImageChange = (e) => {
     const imageFile = e.target.files[0];
@@ -91,7 +129,7 @@ function CreateMenu() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  
+  console.log(formData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,7 +143,8 @@ function CreateMenu() {
         credentials: "include",
       });
 
-     if (!refreshRes.ok) {
+      const dataRefresh = await refreshRes.json();
+      if (!refreshRes.ok) {
         const data = await refreshRes.json();
         dispatch(updateFail(data.error));
         setUpdateMessage("Please clear cookies and sign in again");
@@ -115,14 +154,13 @@ function CreateMenu() {
         }, 4000);
         return;
       }
-      const dataRefresh = await refreshRes.json();
-      dispatch(updateSuccess(dataRefresh)); 
-      
-      
 
-      // If the refresh token is successfully exchanged for a new access token, proceed with updating the profile
+      dispatch(updateSuccess(dataRefresh));
 
-      const res = await fetch(`/api/menu/createMenu`, {
+     
+      const menuId = tabFromUrl.slice("editMenu-".length);
+    const userId = currentUser.message.user._id;
+      const res = await fetch(`/api/menu/updateMenu/${userId}/${menuId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -135,7 +173,7 @@ function CreateMenu() {
         setError(data.message);
       }
 
-      setsuccessMessage(data.message.message);
+      setsuccessMessage(data.message);
 
       setTimeout(() => {
         setError(null);
@@ -153,7 +191,7 @@ function CreateMenu() {
   return (
     <section className="bg-zinc-50 w-full flex  items-center justify-center min-h-screen">
       <div className="bg-white w-full mx-4 md:mx-0 max-w-2xl shadow-xl md:shadow-lg  rounded-md px-6 md:px-16 py-10 ">
-        <h1 className="text-3xl font-bold text-center mb-6">Create Menu</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">Edit Menu</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 md:gap-16 pb-2 md:pb-0 gap-4">
             <div className="col-span-1">
@@ -166,9 +204,9 @@ function CreateMenu() {
               <input
                 id="menuName"
                 type="text"
-                className="input-field border hover:shadow-md hover:rounded-xl px-4 py-2 rounded-md w-full text-gray-600 focus:outline-none"
-                // defaultValue={currentUser?.message?.user?.firstName || ''}
+                className="input-field border hover:shadow-md hover:rounded-xl px-4 py-2 rounded-md w-full text-gray-600  focus:outline-none"
                 placeholder="Menu Name"
+                defaultValue={menuData.menuName || ""}
                 onChange={handleChange}
               />
             </div>
@@ -185,6 +223,7 @@ function CreateMenu() {
                 inputMode="numeric"
                 pattern="[0-9]*"
                 className="input-field border hover:shadow-md hover:rounded-xl px-4 py-2 rounded-md w-full text-gray-600 focus:outline-none"
+                defaultValue={menuData.menuPrice || ""}
                 placeholder="Menu Price"
                 onChange={handleChange}
               />
@@ -202,7 +241,7 @@ function CreateMenu() {
                 id="menuCategory"
                 type="text"
                 className="input-field border hover:shadow-md hover:rounded-xl text-gray-600 px-4 py-2 rounded-md w-full focus:outline-none"
-                // defaultValue={currentUser?.message?.user?.email || ''}
+                defaultValue={menuData.menuCategory || ""}
                 placeholder="Menu Category"
                 onChange={handleChange}
               />
@@ -218,6 +257,7 @@ function CreateMenu() {
                 id="menuType"
                 className="input-field border hover:shadow-md hover:rounded-xl px-4 py-2 rounded-md w-full focus:outline-none text-gray-600"
                 onChange={handleChange}
+                defaultValue={menuData.menuType || ""}
               >
                 <option value="">Select Menu Type</option>
                 <option value="veg">Veg</option>
@@ -241,7 +281,7 @@ function CreateMenu() {
                     type="file"
                     accept="image/*"
                     className="input-field border hover:shadow-md hover:rounded-xl px-4 py-2 rounded-md w-full focus:outline-none text-gray-600"
-                    placeholder="Menu Ingredients"
+                   
                     onChange={handleImageChange}
                   />
                 </div>
@@ -297,7 +337,7 @@ function CreateMenu() {
                 id="menuDiscount"
                 type="text"
                 className="input-field border hover:shadow-md hover:rounded-xl text-gray-600 px-4 py-2 rounded-md w-full focus:outline-none"
-                // defaultValue={currentUser?.message?.user?.email || ''}
+                defaultValue={menuData.menuDiscount || ""}
                 placeholder="Menu Discount"
                 onChange={handleChange}
               />
@@ -315,6 +355,7 @@ function CreateMenu() {
                 className="input-field border hover:shadow-md hover:rounded-xl px-4 py-2 rounded-md w-full focus:outline-none text-gray-600"
                 placeholder="Menu Description"
                 onChange={handleChange}
+                defaultValue={menuData.menuDescription || ""}
               />
             </div>
           </div>
@@ -329,7 +370,7 @@ function CreateMenu() {
                 id="menuStatus"
                 className="input-field border hover:shadow-md hover:rounded-xl px-4 py-2 rounded-md w-full focus:outline-none text-gray-600"
                 onChange={handleChange}
-               
+                defaultValue={menuData.menuStatus || ""}
               >
                 <option value="">Select Menu Status</option>
                 <option value="In Stock">In Stock</option>
@@ -341,7 +382,7 @@ function CreateMenu() {
               type="submit"
               className="bg-[#E52A3D] form-box text-white font-semibold py-2 px-4 rounded-md   w-full"
             >
-              Create Menu
+              Update Menu
             </button>
           </div>
         </form>
@@ -362,4 +403,4 @@ function CreateMenu() {
   );
 }
 
-export default CreateMenu;
+export default EditMenu;

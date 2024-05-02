@@ -156,7 +156,9 @@ export const saveAddress = asyncHandler(async (req, res) => {
 
 
 export const getAddress = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+
+  const _id = req.query.userId;
+  const user = await User.findById(_id);
     if (!user) {
         throw new ApiError(404, "User not found");
     }

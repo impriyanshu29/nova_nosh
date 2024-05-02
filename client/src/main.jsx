@@ -25,6 +25,7 @@ import Updatepassword from './Pages/Updatepassword.jsx'
 import Private_Route from './Components/PrivateRoute/Private_Route.jsx'
 import Dashboard from './Pages/Dashboard.jsx'
 import Profile from './Pages/Profile.jsx'
+import MenuSlug from './Pages/AdminSide/EditMenu/MenuSlug.jsx'
 
 const router = createBrowserRouter([
   {
@@ -105,6 +106,10 @@ const router = createBrowserRouter([
             element:<Profile/>
           }
         ]
+      },
+      {
+        path:"/menu/:menuSlug",
+        element:<MenuSlug/>
       }
     ]
   }

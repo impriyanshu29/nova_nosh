@@ -24,8 +24,8 @@ function CardProfile() {
   
      
       
-
-      const refreshRes = await fetch(`/api/auth/refreshToken`, {
+      const refreshToken = currentUser?.message?.refreshToken 
+      const refreshRes = await fetch(`/api/auth/refreshToken?refresh=${refreshToken}`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -83,9 +83,9 @@ function CardProfile() {
   
     try {
    
-      const refreshToken = currentUser?.message?.refreshToken || null;
+      const refreshToken = currentUser?.message?.refreshToken 
     
-      const refreshRes = await fetch(`/api/auth/refreshToken/${refreshToken}`, {
+      const refreshRes = await fetch(`/api/auth/refreshToken?refresh=${refreshToken}`, {
         method: 'POST',
         credentials: 'include',
       });

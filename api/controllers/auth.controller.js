@@ -459,8 +459,6 @@ export const refreshAccessToken = asyncHandler(async(req,res,next)=>{
    if(!refreshToken){
     throw new ApiError(401,"Unauthorized: Token is missing");
    }
-
-
    const user = await User.findOne({ refreshToken: refreshToken });
 
 

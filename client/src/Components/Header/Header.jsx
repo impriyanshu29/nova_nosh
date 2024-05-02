@@ -13,6 +13,7 @@ import { GoPackage } from "react-icons/go";
 
 import { BsPencil } from "react-icons/bs";
 import { signOutSuccess } from "../../Redux/User-Slice/userSlice";
+import { resetAddress } from "../../Redux/User-Slice/addressSlice";
 import {
   updateFail,
   updateSuccess,
@@ -89,6 +90,7 @@ function Header() {
       const data = await res.json();
       if (res.ok) {
         dispatch(signOutSuccess());
+        dispatch(resetAddress());
         window.location.href = "/";
       } else {
         setError(error.message);
@@ -162,7 +164,7 @@ function Header() {
                       <div className="space-y-2">
                         {currentUser.message.user.isAdmin ? (
                           <Link
-                            to="/dashboard?tab=dashboards"
+                            to="/dashboard?tab=dashboard"
                             className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
                           >
                             <MdDashboardCustomize className="text-xl" />

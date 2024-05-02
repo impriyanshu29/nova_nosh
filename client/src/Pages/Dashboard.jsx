@@ -3,7 +3,9 @@ import { useLocation } from "react-router-dom";
 import SidebarDashboard from "../Components/Dashboard/Sidebar-Dashboard";
 import AdminDashboard from "./AdminSide/AdminDashboard";
 import { useSelector } from "react-redux";
-import CreateMenu from "./AdminSide/EditMenu/CreateMenu";
+import CreateMenu from "./AdminSide/EditMenu/CreateMenu.jsx";
+import EditMenu from "./AdminSide/EditMenu/EditMenu";
+import UpdateMenu from "./AdminSide/EditMenu/UpdateMenu.jsx";
 function Profile() {
   const location = useLocation();
   const [tab, setTab] = useState("");
@@ -25,7 +27,8 @@ function Profile() {
 
           {tab === "dashboard" && <AdminDashboard />}
           {tab === "createMenu" && <CreateMenu />}
-          
+          {tab === "updateMenu" && <UpdateMenu />}
+          {tab.startsWith('editMenu-')&& tab.length > 'editMenu-'.length && <EditMenu />}
         </div>
       )}
     </>
