@@ -2,18 +2,29 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Rating } from "flowbite-react";
 import { FaHeart } from "react-icons/fa";
-
+import { useSelector, useDispatch } from 'react-redux';
 import { BiCheckboxSquare } from "react-icons/bi";
+import { updateFail, updateSuccess, clearError, } from '../../../Redux/User-Slice/userSlice';
+import { set } from "mongoose";
+
+
 function MenuSlug() {
   const [menuData, setMenuData] = useState({});
   const [error, setError] = useState(null);
-
+    const {currentUser} = useSelector((state) =>state.user)
   const { menuSlug } = useParams();
-  console.log("Menu Slug", menuSlug);
+  const dispatch = useDispatch();
 
+  const [updateMessage, setUpdateMessage] = useState('');
+    const [wishList, setWishList] = useState(false);
   useEffect(() => {
+
     try {
       const fetchMenu = async () => {
+
+        
+        
+        // Getting Menu
         const res = await fetch(`/api/menu/getMenu?slug=${menuSlug}`);
         const data = await res.json();
 
@@ -22,6 +33,10 @@ function MenuSlug() {
         } else {
           setMenuData(data.message.menu.menus[0]);
         }
+
+        //Getting wishList status
+      
+
       };
 
       fetchMenu();
@@ -29,13 +44,65 @@ function MenuSlug() {
     } catch (error) {
       setError(error.message);
     }
-  }, [menuSlug]);
+  }, [ ]);
 
-  const [isWishlist, setIsWishlist] = useState(false);
+ useEffect(() => {
+    try {
+        const fetchWishList = async () => {
+            console.log(menuData, currentUser?.message?.user?._id)
+            const resWish = await fetch(`/api/whistList/getStatus/${currentUser?.message?.user?._id}/${menuData._id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+              });
+      
+              if (!resWish.ok) {
+                  const data = await resWish.json();
+                  setError(data.error);
+                  return;
+              }
+      
+              const dataWish = await resWish.json();
+              setWishList(dataWish.status.status);
+                console.log("Wishlist Data", dataWish);
+        };
+        fetchWishList();
+    } catch (error) {
+        setError(error.message)
+    }
+},[ menuData, currentUser?.message?.user?._id])
+  const handleWishlist = async () => {
+    try {
+        const newStatus = !wishList;
+        setWishList(newStatus);
+        const res = await fetch(`/api/whistList/addWhistList/${currentUser?.message?.user?._id}/${menuData._id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-  const toggleWishlist = () => {
-    setIsWishlist(!isWishlist);
-  };
+        if (!res.ok) {
+            const data = await res.json();
+            setError(data.error);
+            return;
+        }
+
+        const data = await res.json();
+        console.log("Wishlist Data", data);
+        setUpdateMessage(data.message);
+        setTimeout(() => {
+            setUpdateMessage(null);
+            setError(null)
+        }, 4000);
+
+
+    } catch (error) {
+        setError(error.message)
+    }
+}
+  
   const discounted = 100 - menuData.menuDiscount;
   const price = (menuData.menuPrice * discounted) / 100;
 
@@ -45,23 +112,24 @@ function MenuSlug() {
         <div className="mx-auto flex flex-wrap items-center md:w-3/5  lg:w-4/5">
           <img
             alt="Menu Image"
-            className="h-3/4 w-full rounded object-cover md:h-3/4 h lg:h-96 lg:w-1/2"
+            className="h-3/4 w-full rounded object-cover md:h-3/4  lg:h-3/5 lg:w-1/2"
             src={menuData.menuImage}
           />
           <div className="mt-6 w-full lg:mt-0 lg:w-1/2 lg:pl-10">
-            <h2 className="text-sm font-semibold tracking-widest text-gray-500">
+            <h2 className="text-sm  font-semibold tracking-widest text-gray-500">
               {menuData.menuCategory}
             </h2>
-            <div className="flex items-center gap-6 my-auto">
+            <div className="flex items-center justify-between md:justify-normal gap-6 my-auto">
               <h1 className="text-3xl font-semibold text-gray-800">
                 {menuData.menuName}
               </h1>
               <FaHeart
                 className={`h-6 w-6 cursor-pointer ${
-                  isWishlist ? "text-red-500" : "text-gray-400"
+                  wishList ? "text-red-500" : "text-gray-400"
                 }`}
-                onClick={toggleWishlist}
-                title={isWishlist ? "Remove from wishlist" : "Add to wishlist"}
+                onClick={handleWishlist}
+              
+                title={wishList? "Remove from wishlist" : "Add to wishlist"}
               />
             </div>
 
@@ -125,7 +193,17 @@ function MenuSlug() {
                 Add to Cart
               </button>
             </div>
+
           </div>
+
+          {error && (
+            <div className="text-center text-red-600 p-3 py-5 rounded-md">{error}</div>
+          )}
+            {updateMessage && (
+                <div className="text-center text-green-600 p-3 py-5 rounded-md">
+                {updateMessage}
+                </div>
+            )}
         </div>
       </div>
     </section>

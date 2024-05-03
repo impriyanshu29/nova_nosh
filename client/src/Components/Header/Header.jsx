@@ -10,7 +10,7 @@ import { IoIosLogOut } from "react-icons/io";
 import { IoPersonOutline } from "react-icons/io5";
 import { MdDashboardCustomize } from "react-icons/md";
 import { GoPackage } from "react-icons/go";
-
+import { CiHeart } from "react-icons/ci";
 import { BsPencil } from "react-icons/bs";
 import { signOutSuccess } from "../../Redux/User-Slice/userSlice";
 import { resetAddress } from "../../Redux/User-Slice/addressSlice";
@@ -65,8 +65,7 @@ function Header() {
   const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
-      
-      const refreshRes = await fetch(`/api/auth/refreshToken `,{
+      const refreshRes = await fetch(`/api/auth/refreshToken `, {
         method: "GET",
         credentials: "include",
       });
@@ -190,6 +189,16 @@ function Header() {
                           </Link>
                         )}
 
+                        {currentUser.message.user.isAdmin ? null : (
+                          <Link
+                            to="/account?pro=wishlist"
+                            className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
+                          >
+                            <CiHeart className="text-2xl font-semibold mx-3" />
+                           Wishlist
+                          </Link>
+                        )}
+
                         <button
                           type="button"
                           onClick={handleLogout}
@@ -228,68 +237,64 @@ function Header() {
                 {/* Logo */}
 
                 {currentUser ? (
-  currentUser.message.user.isAdmin ? (
-    <Link to="/dashboard?tab=dashboards">
-      <div className="flex gap-2 mr-2 items-center">
-        {currentUser.message.user.image ? (
-          <img
-            src={currentUser.message.user.image}
-            alt="User Cover Image"
-            className="w-8 h-8 rounded-full object-cover"
-          />
-        ) : (
-          <BsPersonCircle className="h-6 w-6 text-gray-400 rounded-full" />
-        )}
-        <div>
-          <span className="block text-sm font-semibold text-gray-800">
-            {currentUser.message.user.firstName}{" "}
-            {currentUser.message.user.lastName}
-          </span>
-          <span className="block text-xs text-gray-600">
-            {currentUser.message.user.email}
-          </span>
-        </div>
-      </div>
-    </Link>
-  ) : (
-    <Link
-      to="/account?pro=profile"
-      
-    >
-      <div className="flex gap-2 items-center ">
-        {currentUser.message.user.image ? (
-          <img
-            src={currentUser.message.user.image}
-            alt="User Cover Image"
-            className="w-8 h-8 rounded-full object-cover"
-          />
-        ) : (
-          <BsPersonCircle className="h-7 w-7 text-gray-400 rounded-full" />
-        )}
-        <div>
-          <span className="block text-sm font-semibold text-gray-800">
-            {currentUser.message.user.firstName}{" "}
-            {currentUser.message.user.lastName}
-          </span>
-          <span className="block text-xs text-gray-600">
-            {currentUser.message.user.email}
-          </span>
-        </div>
-      </div>
-    </Link>
-  )
-) : (
-  <Link
-    to="/"
-    className={`whitespace-nowrap self-center font-logo_font text-black text-sm sm:text-xl font-semibold`}
-  >
-    <span className="px-2 py-1 font-logo_font text-[#E52A3D] rounded-lg">
-      NOVA
-    </span>
-    NOSH
-  </Link>
-)}
-
+                  currentUser.message.user.isAdmin ? (
+                    <Link to="/dashboard?tab=dashboards">
+                      <div className="flex gap-2 mr-2 items-center">
+                        {currentUser.message.user.image ? (
+                          <img
+                            src={currentUser.message.user.image}
+                            alt="User Cover Image"
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <BsPersonCircle className="h-6 w-6 text-gray-400 rounded-full" />
+                        )}
+                        <div>
+                          <span className="block text-sm font-semibold text-gray-800">
+                            {currentUser.message.user.firstName}{" "}
+                            {currentUser.message.user.lastName}
+                          </span>
+                          <span className="block text-xs text-gray-600">
+                            {currentUser.message.user.email}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  ) : (
+                    <Link to="/account?pro=profile">
+                      <div className="flex gap-2 items-center ">
+                        {currentUser.message.user.image ? (
+                          <img
+                            src={currentUser.message.user.image}
+                            alt="User Cover Image"
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <BsPersonCircle className="h-7 w-7 text-gray-400 rounded-full" />
+                        )}
+                        <div>
+                          <span className="block text-sm font-semibold text-gray-800">
+                            {currentUser.message.user.firstName}{" "}
+                            {currentUser.message.user.lastName}
+                          </span>
+                          <span className="block text-xs text-gray-600">
+                            {currentUser.message.user.email}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                ) : (
+                  <Link
+                    to="/"
+                    className={`whitespace-nowrap self-center font-logo_font text-black text-sm sm:text-xl font-semibold`}
+                  >
+                    <span className="px-2 py-1 font-logo_font text-[#E52A3D] rounded-lg">
+                      NOVA
+                    </span>
+                    NOSH
+                  </Link>
+                )}
 
                 <button
                   type="button"

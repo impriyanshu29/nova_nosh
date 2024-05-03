@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Sidebar from "../Components/Profile/Sidebar.jsx";
 import Card_Profile from "../Components/Profile/Card_Profile.jsx";
 import Address_Profile from "../Components/Profile/Address_Profile.jsx";
+import WhistList from "./WhistList.jsx";
 function Profile() {
   const location = useLocation();
   const [tab, setTab] = useState("");
@@ -20,6 +21,7 @@ function Profile() {
       </div>
       {tab === "profile" && <Card_Profile />}
       {tab=== "address" && <Address_Profile />}
+      {tab === "wishlist" && <WhistList />}
     </div>
   );
 }

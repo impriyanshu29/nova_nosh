@@ -60,7 +60,7 @@ function Menu() {
 
   return (
     <div>
-      <div className="mx-auto max-w-7xl bg-zinc-50 px-2 ">
+      <div className="mx-auto max-w-6xl bg-zinc-50 px-2 ">
         <div className="flex flex-col space-y-8 pb-10 pt-12 px-2 md:pt-24">
           <p className="text-center font-serif  text-3xl text-gray-900  md:text-5xl md:leading-10">
             Our Popular Menu
@@ -183,7 +183,7 @@ function Menu() {
 
       
 
-        <div className="grid mx-2  md:mx-6 lg:mx-10 gap-6 gap-y-10 py-6 md:grid-cols-2 lg:grid-cols-3 ">
+        <div className="grid mx-2 md:mx-6 lg:mx-16 gap-6 gap-y-10 py-6 md:grid-cols-2 lg:grid-cols-3 ">
           {menus.map((menu) => (
             <div
               key={menu._id}

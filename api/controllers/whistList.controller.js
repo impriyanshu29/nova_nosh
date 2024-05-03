@@ -11,6 +11,7 @@ export const addToWhistList = asyncHandler(async (req, res) => {
         const menuId = req.params.menuId;
         const userId = req.params.userId;
 
+        
         if (!userId) {
             throw new ApiError(400, "Please login to add menu to whistlist");
         }
@@ -23,15 +24,18 @@ export const addToWhistList = asyncHandler(async (req, res) => {
             throw new ApiError(404, "Menu not found");
         }
 
-       
-
         const menuInWhistList = await WhistList.findOne({ user: userId, menu: menuId });
-
         
-        if(menuInWhistList){
-            const result = await WhistList.deleteOne({ user: userId, menu: menuId });
-            return res.status(200).json(new apiResponse(200, "Menu removed from whistlist successfully"));
-        }
+        
+        if (menuInWhistList) {
+            const result = await WhistList.updateOne(
+              { user: userId }, 
+              { $pull: { menu: menuId } } // Removes the specific menu ID
+            );
+            return res.status(200).json(new apiResponse(200, "Menu removed from wishlist successfully"));
+          }
+          
+
         const userWhist = await WhistList.findOne({ user: userId });
 
         if (!userWhist) {
@@ -46,6 +50,8 @@ export const addToWhistList = asyncHandler(async (req, res) => {
                 await userWhist.save();
             }
 
+           
+            
             return res.status(201).json(new apiResponse(201, "Menu added to whistlist successfully"));
         
         
@@ -56,17 +62,53 @@ export const addToWhistList = asyncHandler(async (req, res) => {
     }
 });
 
+
+export const status = asyncHandler(async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const menuId = req.params.menuId;
+  
+     
+     
+      const userWhist = await WhistList.findOne({ user: userId });
+      if (!userWhist) {
+        return res.status(404).json(new apiResponse(404, "Wishlist not found"));
+      }
+    
+      const menuIds = userWhist.menu;
+      const normalizedMenuIds = menuIds.map(id => id.toString());
+
+
+
+
+const menuStatus = normalizedMenuIds.includes(menuId); 
+
+      
+      if (!menuStatus) {
+        return res.status(200).json(new apiResponse(200, "Menu is not in wishlist", { status: false }));
+      }
+
+  
+      return res.status(200).json(new apiResponse(200, "Menu is in wishlist", { status: true }));
+  
+    } catch (error) {
+     
+      return res.status(500).json(new apiResponse(500, error.message)); // Return 500 status
+    }
+  });
+  
 export const  getWhistList = asyncHandler(async(req,res)=>{
     try {
         
         const userId = req.params.userId;
-        const userWishlist = await WhistList.findOne({ user: userId }).select('menu');
+        const userWishlist = await WhistList.findOne({ user: userId })
 
        
         
-        if (!userWishlist || !Array.isArray(userWishlist.menu)) {
+        if (!userWishlist ) {
           throw new ApiError("Wishlist is empty or 'menus' is not an array");
         }
+
         const menuIds = userWishlist.menu; 
         const menus = await Menu.find({ _id: { $in: menuIds } });
         return res
@@ -82,6 +124,6 @@ export const  getWhistList = asyncHandler(async(req,res)=>{
         
 
     } catch (error) {
-        throw new ApiError(500, error.message);
+        throw new ApiError(500, "No wishList found, please add" );
     }
 })
