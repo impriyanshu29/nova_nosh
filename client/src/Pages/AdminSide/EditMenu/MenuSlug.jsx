@@ -44,7 +44,7 @@ function MenuSlug() {
     } catch (error) {
       setError(error.message);
     }
-  }, [ ]);
+  }, [menuSlug ]);
 
  useEffect(() => {
     try {
