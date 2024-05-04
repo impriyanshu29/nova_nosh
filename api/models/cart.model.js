@@ -9,12 +9,21 @@ const cartSchema = new Schema({
         required:true
     }
     ,
-    menu:{
+    menus:[{
+
+       menu:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Menu',
         required:true
-    },
-    quantity:{
+       },
+         quantity:{
+              type:Number,
+              default:1
+         }
+        }
+    ],
+    
+    totalQuantity:{
         type:Number,
         default:1
     }

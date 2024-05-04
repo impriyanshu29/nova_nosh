@@ -26,6 +26,7 @@ const menuSchema = new Schema({
     },
     menuCategory :{
         type :String,
+       
         required : true
     },
     menuType :{
@@ -49,6 +50,10 @@ const menuSchema = new Schema({
     menuIngredients :{
         type :String,
     },
+    isWhistListed:{
+        type:Boolean,
+        default:false
+    }
     
 },{ timestamps: true });
 

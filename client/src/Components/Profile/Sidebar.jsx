@@ -9,6 +9,8 @@ import { updateFail, updateSuccess, signOutSuccess, clearError } from "../../Red
 import { BsPersonCircle } from "react-icons/bs";
 import { FaFolderOpen } from "react-icons/fa";
 import { BsFillPersonFill } from "react-icons/bs";
+import { resetAddress } from "../../Redux/User-Slice/addressSlice";
+import { resetCart } from "../../Redux/Cart-slice/cartSlice";
 
 function Sidebar() {
   const location = useLocation();
@@ -53,6 +55,8 @@ function Sidebar() {
      const data =await res.json();
      if (res.ok) {
        dispatch(signOutSuccess())
+       dispatch(resetAddress())
+       dispatch(resetCart())
        window.location.href = '/'
      }
      else{

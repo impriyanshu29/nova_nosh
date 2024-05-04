@@ -2,28 +2,36 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Rating } from "flowbite-react";
 import { FaHeart } from "react-icons/fa";
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 import { BiCheckboxSquare } from "react-icons/bi";
-import { updateFail, updateSuccess, clearError, } from '../../../Redux/User-Slice/userSlice';
+import {
+  updateFail,
+  updateSuccess,
+  clearError,
+} from "../../../Redux/User-Slice/userSlice";
 import { set } from "mongoose";
-
+import {
+  addToCartStart,
+  addToCartSuccess,
+  addToCartFail,
+} from "../../../Redux/Cart-slice/cartSlice";
 
 function MenuSlug() {
   const [menuData, setMenuData] = useState({});
   const [error, setError] = useState(null);
-    const {currentUser} = useSelector((state) =>state.user)
+  const { currentUser } = useSelector((state) => state.user);
   const { menuSlug } = useParams();
   const dispatch = useDispatch();
 
-  const [updateMessage, setUpdateMessage] = useState('');
-    const [wishList, setWishList] = useState(false);
-  useEffect(() => {
+  const [updateMessage, setUpdateMessage] = useState("");
+  const [wishList, setWishList] = useState(false);
 
+  const { cart } = useSelector((state) => state.cart);
+
+  //to get the menu data
+  useEffect(() => {
     try {
       const fetchMenu = async () => {
-
-        
-        
         // Getting Menu
         const res = await fetch(`/api/menu/getMenu?slug=${menuSlug}`);
         const data = await res.json();
@@ -33,81 +41,211 @@ function MenuSlug() {
         } else {
           setMenuData(data.message.menu.menus[0]);
         }
-
-        //Getting wishList status
-      
-
       };
 
       fetchMenu();
-      console.log("Menu Data", menuData);
+    
     } catch (error) {
       setError(error.message);
     }
-  }, [menuSlug ]);
+  }, [menuSlug]);
 
- useEffect(() => {
+  //to fetch wishlist
+  useEffect(() => {
     try {
-        const fetchWishList = async () => {
-            console.log(menuData, currentUser?.message?.user?._id)
-            const resWish = await fetch(`/api/whistList/getStatus/${currentUser?.message?.user?._id}/${menuData._id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-              });
-      
-              if (!resWish.ok) {
-                  const data = await resWish.json();
-                  setError(data.error);
-                  return;
-              }
-      
-              const dataWish = await resWish.json();
-              setWishList(dataWish.status.status);
-                console.log("Wishlist Data", dataWish);
-        };
-        fetchWishList();
-    } catch (error) {
-        setError(error.message)
-    }
-},[ menuData, currentUser?.message?.user?._id])
-  const handleWishlist = async () => {
-    try {
-        const newStatus = !wishList;
-        setWishList(newStatus);
-        const res = await fetch(`/api/whistList/addWhistList/${currentUser?.message?.user?._id}/${menuData._id}`, {
-            method: 'POST',
+      const fetchWishList = async () => {
+        
+        const resWish = await fetch(
+          `/api/whistList/getStatus/${currentUser?.message?.user?._id}/${menuData._id}`,
+          {
+            method: "GET",
             headers: {
-                'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
-        });
+          }
+        );
 
-        if (!res.ok) {
-            const data = await res.json();
-            setError(data.error);
-            return;
+        if (!resWish.ok) {
+          const data = await resWish.json();
+          setError(data.error);
+          return;
         }
 
-        const data = await res.json();
-        console.log("Wishlist Data", data);
-        setUpdateMessage(data.message);
-        setTimeout(() => {
-            setUpdateMessage(null);
-            setError(null)
-        }, 4000);
-
-
+        const dataWish = await resWish.json();
+        setWishList(dataWish.status.status);
+       
+      };
+      fetchWishList();
     } catch (error) {
-        setError(error.message)
+      setError(error.message);
     }
-}
+  }, [menuData]);
+
+  //to handle wishlist
+  const handleWishlist = async () => {
+    try {
+      const newStatus = !wishList;
+      setWishList(newStatus);
+      const res = await fetch(
+        `/api/whistList/addWhistList/${currentUser?.message?.user?._id}/${menuData._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error);
+        return;
+      }
+
+      const data = await res.json();
+   
+      setUpdateMessage(data.message);
+      setTimeout(() => {
+        setUpdateMessage(null);
+        setError(null);
+      }, 4000);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  //to add to cart
+  const handleCart = async () => {
+    try {
+      const refreshToken = currentUser?.message?.refreshToken;
+      const refreshRes = await fetch(
+        `/api/auth/refreshToken?refresh=${refreshToken}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      const dataRefresh = await refreshRes.json();
+      if (!refreshRes.ok) {
+        const data = await refreshRes.json();
+        dispatch(updateFail(data.error));
+        setUpdateMessage("Please clear cookies and sign in again");
+        setTimeout(() => {
+          setUpdateMessage(null);
+          dispatch(clearError());
+        }, 4000);
+        return;
+      }
+
+      dispatch(updateSuccess(dataRefresh));
+
+      dispatch(addToCartStart());
+      const res = await fetch(
+        `/api/cart/addToCart/${currentUser?.message?.user?._id}/${menuData._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        dispatch(addToCartSuccess(data));
+        setUpdateMessage("Menu added to cart successfully");
+        setTimeout(() => {
+          setUpdateMessage(null);
+        }, 4000);
+        return;
+      } else {
+        dispatch(addToCartFail(data.message));
+        setError("Menu already in cart");
+        setTimeout(() => {
+          setError(null);
+        }, 4000);
+        return;
+      }
+    } catch (error) {
+      setError("Error whiling adding menu to cart");
+      setTimeout(() => {
+        setError(null);
+      }, 4000);
+    }
+  };
+
+  //to remove from cart
+  const handleRemoveCart = async () => {
+    try {
+      dispatch(addToCartStart());
+      const res = await fetch(
+        `/api/cart/remove/${currentUser?.message?.user?._id}/${menuData._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        dispatch(addToCartSuccess(data));
+        setUpdateMessage("Menu removed from cart successfully");
+        setTimeout(() => {
+          setUpdateMessage(null);
+        }, 4000);
+        return;
+      } else {
+        dispatch(addToCartFail(data.message));
+        setError("Error while removing menu from cart");
+        setTimeout(() => {
+          setError(null);
+        }, 4000);
+        return;
+      }
+    } catch (error) {
+      setError("Error while removing menu from cart");
+      setTimeout(() => {
+        setError(null);
+      }, 4000);
+    }
+  };
   
+  useEffect(() => {
+    if (cart.length == 0) {
+      try {
+        const fetchCart = async () => {
+          const res = await fetch(
+            `/api/cart/getCart/${currentUser?.message?.user?._id}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const data = await res.json();
+          if (res.ok) {
+            dispatch(addToCartSuccess(data));
+          } else {
+            dispatch(addToCartFail(data.message));
+          }
+        };
+        fetchCart();
+      } catch (error) {
+        setError("Error while fetching cart");
+        setTimeout(() => {
+          setError(null);
+        }, 4000);
+      }
+    }
+  }, [cart.length, currentUser?.message?.user?._id, menuSlug]);
+
   const discounted = 100 - menuData.menuDiscount;
   const price = (menuData.menuPrice * discounted) / 100;
 
   return (
-    <section className="overflow-hidden">
+    <section className="overflow-hidden bg-zinc-50">
       <div className="mx-auto max-w-5xl px-5 py-24">
         <div className="mx-auto flex flex-wrap items-center md:w-3/5  lg:w-4/5">
           <img
@@ -128,8 +266,7 @@ function MenuSlug() {
                   wishList ? "text-red-500" : "text-gray-400"
                 }`}
                 onClick={handleWishlist}
-              
-                title={wishList? "Remove from wishlist" : "Add to wishlist"}
+                title={wishList ? "Remove from wishlist" : "Add to wishlist"}
               />
             </div>
 
@@ -183,27 +320,42 @@ function MenuSlug() {
                 </span>
                 <span className="text-gray-500 line-through">
                   ₹{menuData.menuPrice}{" "}
-                  {/* Original price with strikethrough */}
                 </span>
               </div>
-              <button
-                type="button"
-                className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-              >
-                Add to Cart
-              </button>
-            </div>
 
+              {/* TO DO ADD TO CART BUTTON */}
+              {cart?.status?.cartData?.menus?.find(
+                (m) => m.menu === menuData._id
+              ) ? (
+                <button
+                  type="button"
+                  className="rounded-md bg-[#E52A3D] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  onClick={handleRemoveCart}
+                >
+                  Remove from Cart 
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="rounded-md bg-black px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#E52A3D] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  onClick={handleCart}
+                >
+                  Add to Cart
+                </button>
+              )}
+            </div>
           </div>
 
           {error && (
-            <div className="text-center text-red-600 p-3 py-5 rounded-md">{error}</div>
+            <div className="text-center mx-auto text-red-600 p-3 py-5 rounded-md">
+              {error}
+            </div>
           )}
-            {updateMessage && (
-                <div className="text-center text-green-600 p-3 py-5 rounded-md">
-                {updateMessage}
-                </div>
-            )}
+          {updateMessage && (
+            <div className="text-center mx-auto text-green-600 p-3 py-5 rounded-md">
+              {updateMessage}
+            </div>
+          )}
         </div>
       </div>
     </section>

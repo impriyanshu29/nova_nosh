@@ -7,6 +7,7 @@ import authRoute from './routes/auth.routes.js';
 import addressRoute from './routes/address.routes.js';
 import menuRoute from './routes/menu.routes.js';
 import whistListRouter from './routes/whistList.routes.js'
+import cartRoute from './routes/cart.routes.js'
 const app = express();
 
 app.use(express.json());    // This is a built-in middleware function in Express. It parses incoming requests with JSON payloads and is based on body-parser.
@@ -19,6 +20,7 @@ app.use('/api/auth',authRoute);
 app.use('/api/add',addressRoute);
 app.use('/api/menu', menuRoute)
 app.use('/api/whistList', whistListRouter)
+app.use('/api/cart', cartRoute)
 export default app;
 
 

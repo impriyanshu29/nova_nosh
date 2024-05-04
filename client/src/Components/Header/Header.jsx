@@ -21,6 +21,7 @@ import {
 } from "../../Redux/User-Slice/userSlice";
 import { useDispatch } from "react-redux";
 import { current } from "@reduxjs/toolkit";
+import { resetCart } from "../../Redux/Cart-slice/cartSlice";
 
 const menuItems = [
   {
@@ -90,6 +91,7 @@ function Header() {
       if (res.ok) {
         dispatch(signOutSuccess());
         dispatch(resetAddress());
+        dispatch(resetCart());
         window.location.href = "/";
       } else {
         setError(error.message);
@@ -98,6 +100,9 @@ function Header() {
       setError(error.message);
     }
   };
+
+  const {cart} = useSelector((state) => state.cart)
+  const totalItems = cart?.status?.cartData?.totalQuantity;
   return (
     <div className="relative bg-zinc-50 w-full ">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
@@ -128,7 +133,16 @@ function Header() {
         </div>
         <div className="hidden  lg:flex lg:items-center lg:justify-end">
           <div className="hidden lg:block rounded-full p-3">
+            <Link className="relative" to="/cart">
             <HiOutlineShoppingCart className="h-6 w-6 cursor-pointer" />
+            {totalItems > 0 && ( 
+        <span
+          className="absolute -top-1 -right-1 bg-[#E52A3D] text-white text-xs rounded-full px-1 "
+        >
+          {totalItems}
+        </span>
+      )}
+            </Link>
           </div>
 
           {/* Sign In ................................ */}
@@ -181,7 +195,7 @@ function Header() {
 
                         {currentUser.message.user.isAdmin ? null : (
                           <Link
-                            to="/order"
+                            to="/cart"
                             className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
                           >
                             <GoPackage className="text-xl mx-3" />
@@ -224,6 +238,8 @@ function Header() {
             )}
           </div>
         </div>
+
+
 
         {/* Mobile View */}
         <div className="lg:hidden">
@@ -318,8 +334,15 @@ function Header() {
                     {item.name}
                   </Link>
                 ))}
-                {currentUser ? (
+                {currentUser && ! currentUser.message.user.isAdmin ? (
                   <>
+                  <Link
+                      key="cart"
+                      to="/cart"
+                      className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
+                    >
+                      Cart
+                    </Link>
                     <Link
                       key="wishlist"
                       to="/account?pro=wishlist"
