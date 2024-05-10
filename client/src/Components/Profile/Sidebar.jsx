@@ -30,7 +30,7 @@ function Sidebar() {
   const handleLogout = async () => {
     try {
      
-     const refreshRes = await fetch(`/api/auth/refreshToken}`, {
+     const refreshRes = await fetch(`/api/auth/refreshToken`, {
        method: 'GET',
        credentials: 'include',
      });

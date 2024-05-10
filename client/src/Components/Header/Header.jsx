@@ -66,40 +66,44 @@ function Header() {
   const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
-      const refreshRes = await fetch(`/api/auth/refreshToken `, {
+     
+      const refreshRes = await fetch(`/api/auth/refreshToken`, {
         method: "GET",
         credentials: "include",
       });
-
-      const dataRefresh = await refreshRes.json();
-      if (!refreshRes.ok) {
-        const data = await refreshRes.json();
-        dispatch(updateFail(data.error));
-
-        setTimeout(() => {
-          dispatch(clearError());
-        }, 4000);
-        return;
-      }
-
-      dispatch(updateSuccess(dataRefresh));
-      const res = await fetch("/api/auth/logout", {
-        method: "POST",
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        dispatch(signOutSuccess());
-        dispatch(resetAddress());
-        dispatch(resetCart());
-        window.location.href = "/";
-      } else {
-        setError(error.message);
-      }
+  
+    const dataRefresh = await refreshRes.json();
+     if (!refreshRes.ok) {
+       const data = await refreshRes.json();
+       dispatch(updateFail(data.error));
+       
+       setTimeout(() => {
+        
+         dispatch(clearError());
+       }, 4000);
+       return;
+     }
+ 
+     dispatch(updateSuccess(dataRefresh));
+     const res = await fetch('/api/auth/logout',{
+       method:"POST",
+     });
+ 
+     const data =await res.json();
+     if (res.ok) {
+       dispatch(signOutSuccess())
+       dispatch(resetAddress())
+       dispatch(resetCart())
+       window.location.href = '/'
+     }
+     else{
+       setError(error.message)
+     }
     } catch (error) {
-      setError(error.message);
+     setError(error.message)
     }
-  };
+ 
+   }
 
   const {cart} = useSelector((state) => state.cart)
   const totalItems = cart?.status?.cartData?.totalQuantity;

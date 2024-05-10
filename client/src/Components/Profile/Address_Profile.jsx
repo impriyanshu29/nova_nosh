@@ -17,7 +17,10 @@ function Address_Profile() {
 
     const location = useLocation();
     const  urlParams = new URLSearchParams(location.search);
+    //eg: http://localhost:3000/profile?pro=address
+    //then myParam will be address and urlParams will be  
     const myParam = urlParams.get("pro");
+    //
     
   const [pincode, setPinCode] = useState("");
   const [load, setLoading] = useState(false);

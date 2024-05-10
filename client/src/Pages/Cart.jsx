@@ -67,10 +67,7 @@ function Cart() {
         setError(null);
       }, 4000);
     }
-  }, [
-    currentUser?.message?.user?._id,
-    cart?.status?.cartData?.menus.totalQuantity,
-  ]);
+  }, [cart?.status?.cartData?.menus.totalQuantity]);
 
   useEffect(() => {
     fetchProducts();
@@ -85,7 +82,7 @@ function Cart() {
     return acc + item.menuPrice * quantity;
   }, 0);
   const totalDiscount = pro.flat().reduce((acc, item) => {
-    const menuInCart = cart?.status?.cartData?.menus?.find(
+  const menuInCart = cart?.status?.cartData?.menus?.find(
       (m) => m.menu === item._id
     );
     const quantity = menuInCart?.quantity;

@@ -27,6 +27,7 @@ import Dashboard from './Pages/Dashboard.jsx'
 import Profile from './Pages/Profile.jsx'
 import MenuSlug from './Pages/AdminSide/EditMenu/MenuSlug.jsx'
 import Cart from './Pages/Cart.jsx'
+import Checkout from './Pages/Checkout.jsx'
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,17 @@ const router = createBrowserRouter([
           {
             index:true,
             element:<Cart/>
+          }
+        ]
+      
+      },
+      {
+        path: '/checkout',
+        element:<Private_Route/>,
+        children:[
+          {
+            index:true,
+            element:<Checkout/>
           }
         ]
       
