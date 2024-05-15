@@ -25,12 +25,13 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
-        signOutSuccess:(state)=>{
-            state.loading = false,
-            state.currentUser=null,
-            state.address=null, 
-            state.error = null
-        },
+        signOutSuccess: (state) => {
+            state.loading = false;
+            state.currentUser = null;
+            state.address = null;
+            state.error = null;
+          },
+          
         updateStart:(state)=>{
             state.loading = true;
             state.error = null;

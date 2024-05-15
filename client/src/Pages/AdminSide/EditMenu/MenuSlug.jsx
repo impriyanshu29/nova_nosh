@@ -44,7 +44,6 @@ function MenuSlug() {
       };
 
       fetchMenu();
-    
     } catch (error) {
       setError(error.message);
     }
@@ -54,7 +53,6 @@ function MenuSlug() {
   useEffect(() => {
     try {
       const fetchWishList = async () => {
-        
         const resWish = await fetch(
           `/api/whistList/getStatus/${currentUser?.message?.user?._id}/${menuData._id}`,
           {
@@ -73,7 +71,6 @@ function MenuSlug() {
 
         const dataWish = await resWish.json();
         setWishList(dataWish.status.status);
-       
       };
       fetchWishList();
     } catch (error) {
@@ -103,7 +100,7 @@ function MenuSlug() {
       }
 
       const data = await res.json();
-   
+
       setUpdateMessage(data.message);
       setTimeout(() => {
         setUpdateMessage(null);
@@ -210,9 +207,9 @@ function MenuSlug() {
       }, 4000);
     }
   };
-  
+
   useEffect(() => {
-    if (cart.length == 0) {
+    if (!cart.data || cart?.data?.menus?.length == 0) {
       try {
         const fetchCart = async () => {
           const res = await fetch(
@@ -239,10 +236,10 @@ function MenuSlug() {
         }, 4000);
       }
     }
-  }, [cart.length, currentUser?.message?.user?._id, menuSlug]);
+  }, [cart?.data?.menus.length, currentUser?.message?.user?._id, menuSlug]);
 
-  const discounted = 100 - menuData.menuDiscount;
-  const price = (menuData.menuPrice * discounted) / 100;
+  const discounted = 100 - menuData?.menuDiscount;
+  const price = (menuData?.menuPrice * discounted) / 100;
 
   return (
     <section className="overflow-hidden bg-zinc-50">
@@ -251,15 +248,15 @@ function MenuSlug() {
           <img
             alt="Menu Image"
             className="h-3/4 w-full rounded object-cover md:h-3/4  lg:h-3/5 lg:w-1/2"
-            src={menuData.menuImage}
+            src={menuData?.menuImage}
           />
           <div className="mt-6 w-full lg:mt-0 lg:w-1/2 lg:pl-10">
             <h2 className="text-sm  font-semibold tracking-widest text-gray-500">
-              {menuData.menuCategory}
+              {menuData?.menuCategory}
             </h2>
             <div className="flex items-center justify-between md:justify-normal gap-6 my-auto">
               <h1 className="text-3xl font-semibold text-gray-800">
-                {menuData.menuName}
+                {menuData?.menuName}
               </h1>
               <FaHeart
                 className={`h-6 w-6 cursor-pointer ${
@@ -283,10 +280,10 @@ function MenuSlug() {
                 </p>
               </Rating>
             </div>
-            <p className="leading-relaxed">{menuData.menuDescription}</p>
+            <p className="leading-relaxed">{menuData?.menuDescription}</p>
             <div className="mb-5 mt-6 flex items-center border-b-2 border-gray-100 pb-5">
               <div className="flex items-center">
-                {menuData.menuType === "veg" ? (
+                {menuData?.menuType === "veg" ? (
                   <span className="text-base font-semibold text-green-600 flex items-center">
                     Pure-Veg
                     <BiCheckboxSquare className=" mt-1 ml-1 h-6 w-6" />
@@ -300,12 +297,12 @@ function MenuSlug() {
               </div>
               <div className="ml-auto flex items-center">
                 <div className="relative">
-                  {menuData.menuStatus === "In Stock" ? (
+                  {menuData?.menuStatus === "In Stock" ? (
                     <span className="text-base font-semibold text-gray-900">
                       In Stock
                     </span>
                   ) : (
-                    <span className="text-sm text-red-500">Out of Stock</span>
+                    " "
                   )}
                 </div>
               </div>
@@ -313,34 +310,36 @@ function MenuSlug() {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-red-500">
-                  {menuData.menuDiscount}% off
+                  {menuData?.menuDiscount}% off
                 </span>
                 <span className="text-xl font-bold text-green-600">
-                  ₹{menuData.discountPrice || price}
+                  ₹{menuData?.discountPrice || price}
                 </span>
                 <span className="text-gray-500 line-through">
-                  ₹{menuData.menuPrice}{" "}
+                  ₹{menuData?.menuPrice}{" "}
                 </span>
               </div>
 
               {/* TO DO ADD TO CART BUTTON */}
-              {cart?.status?.cartData?.menus?.find(
-                (m) => m.menu === menuData._id
-              ) ? (
+              {cart?.data?.menus.find((m) => m.menu === menuData._id) ? (
                 <button
                   type="button"
                   className="rounded-md bg-[#E52A3D] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                   onClick={handleRemoveCart}
                 >
-                  Remove from Cart 
+                  Remove from Cart
                 </button>
+              ) : menuData?.menuStatus === "Out of Stock" ? (
+                <p className="rounded-md  px-3 py-2 text-md font-semibold text-red-600  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
+                  Out of Stock
+                </p>
               ) : (
                 <button
                   type="button"
-                  className="rounded-md bg-black px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#E52A3D] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#E52A3D] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                   onClick={handleCart}
                 >
-                  Add to Cart
+                  Add To Cart
                 </button>
               )}
             </div>

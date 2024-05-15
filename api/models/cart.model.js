@@ -19,16 +19,24 @@ const cartSchema = new Schema({
          quantity:{
               type:Number,
               default:1
-         }
+         },
+         menuData: { 
+            type: Object,
+            required: true
+          },
+              
         }
     ],
     
     totalQuantity:{
         type:Number,
         default:1
-    }
+    },
+   
 
-})
+},
+{timestamps:true}
+)
 
 const Cart = mongoose.model('Cart',cartSchema);
 

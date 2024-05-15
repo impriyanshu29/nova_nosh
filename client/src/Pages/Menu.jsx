@@ -6,7 +6,11 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { FloatingLabel } from "flowbite-react";
-import { addToCartStart, addToCartSuccess, addToCartFail } from "../Redux/Cart-slice/cartSlice";
+import {
+  addToCartStart,
+  addToCartSuccess,
+  addToCartFail,
+} from "../Redux/Cart-slice/cartSlice";
 import { useSelector, useDispatch } from "react-redux";
 
 function Menu() {
@@ -23,7 +27,6 @@ function Menu() {
   const [updateMessage, setUpdateMessage] = useState(null);
   const { cart } = useSelector((state) => state.cart);
 
-
   const [category, setCategory] = useState(" ");
   const handleCategoryChange = (category) => {
     if (category === "All Category") {
@@ -33,7 +36,6 @@ function Menu() {
     }
   };
 
-  console.log("Category", category);
   // const handleSearch = (e) => {
   //   e.preventDefault();
   //   try {
@@ -62,6 +64,7 @@ function Menu() {
       const data = await res.json();
       if (res.ok) {
         setMenus(data.message.menu.menus);
+        console.log(menus);
         setFullMenu(data.message.menu);
       }
     };
@@ -70,9 +73,7 @@ function Menu() {
 
   const handleCart = async (itemId) => {
     try {
-     
       dispatch(addToCartStart());
-
 
       const res = await fetch(
         `/api/cart/addToCart/${currentUser?.message?.user?._id}/${itemId}`,
@@ -141,11 +142,12 @@ function Menu() {
     }
   };
 
+  const [cartFetched, setCartFetched] = useState(false);
 
   useEffect(() => {
-    if (cart.length == 0) {
-      try {
-        const fetchCart = async () => {
+    if (!cartFetched && (!cart.data || cart.data.menus.length === 0)) {
+      const fetchCart = async () => {
+        try {
           const res = await fetch(
             `/api/cart/getCart/${currentUser?.message?.user?._id}`,
             {
@@ -161,16 +163,19 @@ function Menu() {
           } else {
             dispatch(addToCartFail(data.message));
           }
-        };
-        fetchCart();
-      } catch (error) {
-        setError("Error while fetching cart");
-        setTimeout(() => {
-          setError(null);
-        }, 4000);
-      }
+        } catch (error) {
+          setError("Error while fetching cart");
+          setTimeout(() => {
+            setError(null);
+          }, 4000);
+        }
+        setCartFetched(true);
+      };
+      fetchCart();
     }
-  }, [cart.length, currentUser?.message?.user?._id, menuSlug]);
+  }, [cart, cartFetched, currentUser, dispatch]);
+
+  
 
   return (
     <div className="bg-zinc-50">
@@ -195,7 +200,6 @@ function Menu() {
                   }}
                   variant="outlined"
                   label={<span className="text-gray-900">Search Menu</span>}
-                  
                 />
               </div>
               <button
@@ -208,7 +212,6 @@ function Menu() {
           </form>
 
           <div className="flex flex-wrap justify-center w-full md:w-3/4 items-center mx-auto gap-4">
-            
             <button
               type="button"
               onClick={() => handleCategoryChange("All Category")}
@@ -295,8 +298,6 @@ function Menu() {
           </div>
         </div>
 
-      
-
         <div className="grid mx-2 md:mx-6 lg:mx-16 gap-6 gap-y-10 py-6 md:grid-cols-2 lg:grid-cols-3 ">
           {menus.map((me) => (
             <div
@@ -309,8 +310,8 @@ function Menu() {
                   className=" px-3   w-full rounded-md"
                   alt="Menu Image"
                 />
-                 </Link>
-                <div className="min-h-min ">
+              </Link>
+              <div className="min-h-min ">
                 <Link to={`/menu/${me.slug}`}>
                   <p className="mt-4 flex-1 text-2xl font-bold pb-4 text-gray-900 text-center ">
                     {me.menuName}
@@ -322,42 +323,52 @@ function Menu() {
                       }}
                     />
                   </p>
-                  </Link>
-                  <div className="flex py-4 items-center justify-around">
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-red-500">
-                  {me.menuDiscount}% off
-                </span>
-                <span className="text-xl font-bold text-green-600">
-                  ₹{me.discountPrice }
-                </span>
-                <span className="text-gray-500 line-through">
-                  ₹{me.menuPrice}{" "}
-                  {/* Original price with strikethrough */}
-                </span>
-              </div>
-              {cart?.status?.cartData?.menus?.find(
-                (m) => m.menu === me._id
-              ) ? (
-                <button
-                  type="button"
-                  className="rounded-md bg-[#E52A3D] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                  onClick={() => handleRemoveCart(me._id)}
-                >
-                  Remove from Cart 
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#E52A3D] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                  onClick={() => handleCart(me._id)} 
-                >
-                  Add to Cart
-                </button>
-              )}
-            </div>
+                </Link>
+                <div className="flex py-4 items-center justify-around">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm text-red-500">
+                      {me.menuDiscount}% off
+                    </span>
+                    <span className="text-xl font-bold text-green-600">
+                      ₹{me.discountPrice}
+                    </span>
+                    <span className="text-gray-500 line-through">
+                      ₹{me.menuPrice} {/* Original price with strikethrough */}
+                    </span>
+                  </div>
+
+                  {cart?.data?.menus?.find((m) => m.menuData._id === me._id)
+                   ? (
+                    <button
+                      type="button"
+                      className="rounded-md bg-[#E52A3D] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                      onClick={() => handleRemoveCart(me._id)}
+                    >
+                      Remove from Cart
+                    </button>
+                  ) : (
+                    
+                    me.menuStatus==="Out of Stock" ?(<p
+                   
+                    className="rounded-md  px-3 py-2 text-sm font-semibold text-red-600  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                    
+                  >
+                    Out of Stock
+                  
+                  </p>) :
+                  (<button
+                    type="button"
+                    className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#E52A3D] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                    onClick={() => handleCart(me._id)}
+                  >
+                    Add To Cart
+                  
+                  </button>)
+                      
+                    
+                  )}
                 </div>
-             
+              </div>
             </div>
           ))}
         </div>

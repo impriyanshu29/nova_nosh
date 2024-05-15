@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BiCheckboxSquare } from "react-icons/bi";
 import {
   removeFromCartSuccess,
@@ -9,6 +9,8 @@ import {
   addToCartSuccess,
   removeFromCartFail,
 } from "../Redux/Cart-slice/cartSlice";
+
+// function to display the cart
 function Cart() {
   const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.cart);
@@ -18,77 +20,57 @@ function Cart() {
   const menuSlug = location.pathname.split("/")[2];
   const [success, setSuccess] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
+const navigate = useNavigate();
+  
 
-  const fetchProducts = async () => {
-    try {
-      const allMenu = cartProduct.map((id) => {
-        return fetch(`/api/menu/getMenu?_id=${id}`).then((res) => {
-          if (!res.ok) {
-            setError("Failed to fetch products");
-          }
-          return res.json();
-        });
-      });
-
-      const data = await Promise.all(allMenu);
-      console.log("Data", data);
-      setProducts(data);
-    } catch (error) {
-      setError("Failed to fetch products");
-      setTimeout(() => {
-        setError(null);
-      }, 1000);
-    }
-  };
+  
+  const [cartFetched, setCartFetched] = useState(false);
 
   useEffect(() => {
-    try {
+    if (!cartFetched && (!cart.data || cart.data.menus.length === 0)) {
       const fetchCart = async () => {
-        const res = await fetch(
-          `/api/cart/getCart/${currentUser?.message?.user?._id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
+        try {
+          const res = await fetch(
+            `/api/cart/getCart/${currentUser?.message?.user?._id}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const data = await res.json();
+          if (res.ok) {
+            dispatch(addToCartSuccess(data));
+          } else {
+            dispatch(addToCartFail(data.message));
           }
-        );
-        const data = await res.json();
-        if (res.ok) {
-          dispatch(addToCartSuccess(data));
-        } else {
-          dispatch(addToCartFail(data.message));
+        } catch (error) {
+          setError("Error while fetching cart");
+          setTimeout(() => {
+            setError(null);
+          }, 4000);
         }
+        setCartFetched(true);
       };
       fetchCart();
-    } catch (error) {
-      setError("Error while fetching cart");
-      setTimeout(() => {
-        setError(null);
-      }, 4000);
     }
-  }, [cart?.status?.cartData?.menus.totalQuantity]);
+  }, [cart, cartFetched, currentUser, dispatch]);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [cart?.status?.cartData?.menus]);
 
-  const pro = products.map((p) => p.message.menu.menus);
-  const totalMoney = pro.flat().reduce((acc, item) => {
-    const menuInCart = cart?.status?.cartData?.menus?.find(
-      (m) => m.menu === item._id
-    );
-    const quantity = menuInCart?.quantity;
-    return acc + item.menuPrice * quantity;
-  }, 0);
-  const totalDiscount = pro.flat().reduce((acc, item) => {
-  const menuInCart = cart?.status?.cartData?.menus?.find(
-      (m) => m.menu === item._id
-    );
-    const quantity = menuInCart?.quantity;
-    return acc + item.discountPrice * quantity;
-  }, 0);
-  const discount = totalMoney - totalDiscount;
+  
+ 
+  
+  const totalMoney = cart?.data?.menus?.reduce((acc, item) => 
+    acc + item.menuData.menuPrice * item.quantity
+  , 0);
+
+  
+  const totalDiscount = cart?.data?.menus?.reduce((acc, item) =>
+    acc + item.menuData.discountPrice * item.quantity
+  , 0);
+  const discount = totalMoney - totalDiscount ;
+  const showDiscount = discount+(totalMoney > 200 ? 50 : 0)
   const finalMoney = totalDiscount + (totalMoney > 200 ? 0 : 50);
 
   // to remove product from cart
@@ -191,7 +173,39 @@ function Cart() {
       }, 3000);
     }
   };
-  const isCartEmpty = cart?.status?.cartData?.menus?.length === 0;
+  const isCartEmpty = !cart.data || !cart.data.menus || cart.data.menus.length === 0;
+
+  const handleOrder = async () => {
+    try {
+      const res = await fetch(`/api/payment/order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: finalMoney * 100,
+          currency: "INR",
+          receipt: `${currentUser?.message?.user?._id}`,
+        }),
+      });
+      const data = await res.json();
+      if(res.ok){
+        navigate(`/checkout/${data.data.id}`);
+      }
+      else{
+        setError("Failed to place order");
+        setTimeout(() => {
+          setError(null);
+        }, 3000);
+      }
+    }
+    catch (error) {
+      setError("Failed to place order");
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
+    }
+  };
 
   return (
     <>
@@ -247,13 +261,13 @@ function Cart() {
                   Items in your shopping cart
                 </h2>
                 <ul role="list" className="divide-y divide-gray-200">
-                  {pro.flat().map((product) => (
+                  { cart?.data?.menus?.flat().map((product) => (
                     <div key={product._id} className="">
                       <li className="flex py-6 sm:py-6 ">
                         <div className="flex-shrink-0">
                           <img
-                            src={product.menuImage}
-                            alt={product.menuName}
+                            src={product.menuData.menuImage}
+                            alt={product.menuData.menuName}
                             className="sm:h-38 sm:w-38 h-24 w-24 rounded-md object-contain object-center"
                           />
                         </div>
@@ -264,16 +278,16 @@ function Cart() {
                               <div className="flex justify-between">
                                 <h3 className="text-sm">
                                   <Link
-                                    to={`/menu/${product.slug}`}
+                                    to={`/menu/${product.menuData.slug}`}
                                     className="font-semibold text-black"
                                   >
-                                    {product.menuName}
+                                    {product.menuData.menuName}
                                   </Link>
                                 </h3>
                               </div>
                               <div className="mt-1 flex text-sm">
                                 <div className="flex items-center">
-                                  {product.menuType === "veg" ? (
+                                  {product.menuData.menuType === "veg" ? (
                                     <span className="text-sm font-semibold text-green-600 flex items-center">
                                       Pure-Veg
                                       <BiCheckboxSquare className=" mt-1 ml-1 h-6 w-6" />
@@ -284,9 +298,9 @@ function Cart() {
                                       <BiCheckboxSquare className=" mt-1 ml-1 h-6 w-6" />
                                     </span>
                                   )}
-                                  {product.menuCategory ? (
+                                  {product.menuData.menuCategory ? (
                                     <p className="ml-4 border-l border-gray-200 pl-4  text-sm text-gray-500">
-                                      {product.menuCategory}
+                                      {product.menuData.menuCategory}
                                     </p>
                                   ) : null}
                                 </div>
@@ -294,19 +308,19 @@ function Cart() {
                               <div className="mt-2 flex items-end">
                                 <div className="flex items-center space-x-2">
                                   <span className="text-sm text-red-500">
-                                    {product.menuDiscount}% off
+                                    {product.menuData.menuDiscount}% off
                                   </span>
                                   <span className=" font-bold text-base text-green-600">
-                                    ₹{product.discountPrice}
+                                    ₹{product.menuData.discountPrice}
                                   </span>
                                   <span className="text-gray-500 text-base line-through">
-                                    ₹{product.menuPrice}{" "}
+                                    ₹{product.menuData.menuPrice}{" "}
                                   </span>
                                 </div>
                               </div>
                               <div className="ml-auto flex items-center">
                                 <div className="relative mt-1">
-                                  {product.menuStatus === "In Stock" ? (
+                                  {product.menuData.menuStatus === "In Stock" ? (
                                     <span className="text-sm   text-gray-900">
                                       In Stock
                                     </span>
@@ -327,7 +341,7 @@ function Cart() {
                             type="button"
                             className="h-7 w-7"
                             onClick={() => {
-                              handleDecrement(product._id);
+                              handleDecrement(product.menuData._id);
                             }}
                           >
                             -
@@ -335,18 +349,17 @@ function Cart() {
                           <input
                             type="text"
                             className="mx-1 h-7 w-9 rounded-md border text-center"
-                            defaultValue={1}
+                          
+                            readOnly
                             value={
-                              cart?.status?.cartData?.menus?.find(
-                                (m) => m.menu === product._id
-                              )?.quantity || 0
+                              product.quantity
                             }
                           />
                           <button
                             type="button"
                             className="flex h-7 w-7 items-center justify-center"
                             onClick={() => {
-                              handleIncrement(product._id);
+                              handleIncrement(product.menuData._id);
                             }}
                           >
                             +
@@ -357,7 +370,7 @@ function Cart() {
                             type="button"
                             className="flex items-center space-x-1 px-2 py-1 pl-0"
                             onClick={() => {
-                              handleRemove(product._id);
+                              handleRemove(product.menuData._id);
                             }}
                           >
                             {/* <Trash size={12} className="text-red-500" /> */}
@@ -397,7 +410,7 @@ function Cart() {
                         <span>Discount</span>
                       </dt>
                       <dd className="text-sm font-medium text-green-700">
-                        ₹ {discount}
+                        - ₹ {discount}
                       </dd>
                     </div>
                     <div className="flex items-center justify-between py-4">
@@ -419,15 +432,18 @@ function Cart() {
                     </div>
                   </dl>
                   <div className="px-2 pb-4 font-medium text-green-700">
-                    You will save ₹{discount} on this order
+                    You will save ₹{showDiscount} on this order
                   </div>
                 </div>
-                <Link
-                  to="/checkout"
-                  className="block px-3 py-3 bg-black text-white font-semibold text-sm text-center mt-5 rounded-md shadow-sm hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                >
-                  Proceed to Checkout
-                </Link>
+                <div className="px-4 py-3 flex justify-center ">
+                <button
+                          type="button"
+                          onClick={handleOrder}
+                          className="rounded-md bg-[#E52A3D] px-2 py-2 mx-auto text-base w-full font-semibold text-white shadow-sm hover:bg-black/80"
+                        >
+                        Proceed to Checkout
+                        </button>
+                </div>
               </section>
             </form>
             {error && (

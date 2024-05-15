@@ -21,28 +21,25 @@ function CardProfile() {
     }
   
     try {
-  
-     
       
-      const refreshToken = currentUser?.message?.refreshToken 
-      const refreshRes = await fetch(`/api/auth/refreshToken?refresh=${refreshToken}`, {
-        method: 'GET',
-        credentials: 'include',
+      const refreshRes = await fetch(`/api/auth/refreshToken`, {
+        method: "GET",
+        credentials: "include",
       });
-   
-     const dataRefresh = await refreshRes.json();
-      if (!refreshRes.ok) {
-        const data = await refreshRes.json();
-        dispatch(updateFail(data.error));
-        setUpdateMessage("Please clear cookies and sign in again");
-        setTimeout(() => {
-          setUpdateMessage(null);
-          dispatch(clearError());
-        }, 4000);
-        return;
-      }
-
-      dispatch(updateSuccess(dataRefresh));
+  
+    const dataRefresh = await refreshRes.json();
+     if (!refreshRes.ok) {
+       const data = await refreshRes.json();
+       dispatch(updateFail(data.error));
+       
+       setTimeout(() => {
+        
+         dispatch(clearError());
+       }, 4000);
+       return;
+     }
+ 
+     dispatch(updateSuccess(dataRefresh));
   
       // If the refresh token is successfully exchanged for a new access token, proceed with updating the profile
       dispatch(updateStart());

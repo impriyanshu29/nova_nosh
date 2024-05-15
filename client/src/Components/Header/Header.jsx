@@ -38,8 +38,8 @@ const menuItems = [
     href: "/menu",
   },
   {
-    name: "Order ",
-    href: "/order",
+    name: "Orders ",
+    href: "/orderStatus",
   },
   {
     name: "Reservations",
@@ -52,6 +52,7 @@ const menuItems = [
   },
 ];
 
+import { useNavigate } from "react-router-dom";
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const toggleMenu = () => {
@@ -62,7 +63,7 @@ function Header() {
   const [error, setError] = useState(" ");
 
   const { currentUser } = useSelector((state) => state.user);
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
@@ -89,16 +90,14 @@ function Header() {
        method:"POST",
      });
  
-     const data =await res.json();
-     if (res.ok) {
-       dispatch(signOutSuccess())
-       dispatch(resetAddress())
-       dispatch(resetCart())
-       window.location.href = '/'
+     if(!res.ok) {
+      setError(error.message)
+      
      }
-     else{
-       setError(error.message)
-     }
+     dispatch(signOutSuccess()),
+     dispatch(resetAddress()),
+     dispatch(resetCart()),
+   navigate("/")
     } catch (error) {
      setError(error.message)
     }
@@ -106,7 +105,7 @@ function Header() {
    }
 
   const {cart} = useSelector((state) => state.cart)
-  const totalItems = cart?.status?.cartData?.totalQuantity;
+  const totalItems = cart?.data?.totalQuantity;
   return (
     <div className="relative bg-zinc-50 w-full ">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
@@ -125,12 +124,12 @@ function Header() {
           <ul className="inline-flex space-x-8">
             {menuItems.map((item) => (
               <li key={item.name}>
-                <a
-                  href={item.href}
+                <Link
+                  to={item.href}
                   className="text-base font-logo_font font-thin  text-gray-800 hover:text-[#E52A3D] hover:border-b-2 hover:border-[#E52A3D] py-2 transition duration-300 ease-in-out"
                 >
                   {item.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -199,7 +198,7 @@ function Header() {
 
                         {currentUser.message.user.isAdmin ? null : (
                           <Link
-                            to="/cart"
+                            to="/orderStatus"
                             className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
                           >
                             <GoPackage className="text-xl mx-3" />

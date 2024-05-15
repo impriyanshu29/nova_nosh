@@ -20,11 +20,11 @@ const addressSchema = new Schema(
     },
     houseNo: {
       type: String,
-        default: "",
+      default: "",
     },
     area: {
         type: String,
-            default: "",
+          default: "",
         },
 
     pin_code: {

@@ -28,6 +28,8 @@ import Profile from './Pages/Profile.jsx'
 import MenuSlug from './Pages/AdminSide/EditMenu/MenuSlug.jsx'
 import Cart from './Pages/Cart.jsx'
 import Checkout from './Pages/Checkout.jsx'
+import OrderStatus from './Pages/OrderStatus.jsx'
+import OrderDetails from './Pages/OrderDetails.jsx'
 
 const router = createBrowserRouter([
   {
@@ -65,12 +67,34 @@ const router = createBrowserRouter([
       
       },
       {
-        path: '/checkout',
+        path: '/checkout/:orderId',
         element:<Private_Route/>,
         children:[
           {
             index:true,
             element:<Checkout/>
+          }
+        ]
+      
+      },{
+        path: '/orderDetails/:orderId',
+        element:<Private_Route/>,
+        children:[
+          {
+            index:true,
+            element:<OrderDetails/>
+          }
+        ]
+      
+      }
+      
+      ,{
+        path: '/orderStatus',
+        element:<Private_Route/>,
+        children:[
+          {
+            index:true,
+            element:<OrderStatus/>
           }
         ]
       
@@ -90,8 +114,8 @@ const router = createBrowserRouter([
       {
         path:'/order',
         element:<Order_Online/>
-        
       },
+      
       {
         path:'/reservations',
         element:<Reservation/>
