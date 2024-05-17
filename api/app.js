@@ -44,7 +44,7 @@ app.use('/api/table', tableRoute);
 app.use('/api/contact', contactRoute);
 
 // Serve static files
-app.use(express.static(path.join(__dirname, '/client/dist')));
+app.use(express.static(path.join(__dirname, '/client/src')));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/dist/index.html'));
