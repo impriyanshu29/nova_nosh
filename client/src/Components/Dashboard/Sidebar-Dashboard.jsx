@@ -119,14 +119,14 @@ function SidebarDashboard() {
                       >
                         <span className="text-sm font-medium">Order List</span>
                       </NavLink>
-                      <NavLink
+                      {/* <NavLink
                         to="/dashboard?tab=orderID"
                         className={`flex transform items-center rounded-lg px-3 py-2 text-gray-600 transition-colors duration-300 hover:bg-gray-100 hover:text-gray-700 hover:underline ${
                           tab === "orderID" ? "bg-gray-200 text-gray-800" : ""
                         }`}
                       >
                         <span className=" text-sm font-medium">Order ID</span>
-                      </NavLink>
+                      </NavLink> */}
                     </div>
                   )}
                 </div>
@@ -265,7 +265,7 @@ function SidebarDashboard() {
                   </button>
                   {tableDropDown && (
                     <div className="pl-8">
-                      <NavLink
+                      {/* <NavLink
                         to="/dashboard?tab=createTable"
                         className={`flex transform items-center rounded-lg gap-2 px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 hover:underline ${
                           tab === "createTable"
@@ -274,7 +274,7 @@ function SidebarDashboard() {
                         }`}
                       >
                         <span className="text-sm font-medium">Add Table</span>
-                      </NavLink>
+                      </NavLink> */}
                       <NavLink
                         to="/dashboard?tab=tableList"
                         className={`flex transform items-center rounded-lg px-3 py-2 text-gray-600 transition-colors duration-300 hover:bg-gray-100 hover:text-gray-700 hover:underline ${
@@ -283,14 +283,14 @@ function SidebarDashboard() {
                       >
                         <span className=" text-sm font-medium">Table List</span>
                       </NavLink>
-                      <NavLink
+                      {/* <NavLink
                         to="/dashboard?tab=tableId"
                         className={`flex transform items-center rounded-lg px-3 py-2 text-gray-600 transition-colors duration-300 hover:bg-gray-100 hover:text-gray-700 hover:underline ${
                           tab === "tableId" ? "bg-gray-200 text-gray-800" : ""
                         }`}
                       >
                         <span className=" text-sm font-medium">Table Id</span>
-                      </NavLink>
+                      </NavLink> */}
                     </div>
                   )}
                 </div>

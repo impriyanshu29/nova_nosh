@@ -120,10 +120,10 @@ function OrderDetails() {
                     I think you missed something!
                   </h2>
                 </div>
-                <div className="w-64 md:w-0">
+                <div className="w-64 ">
                   <p
                     className="text-gray-500 flex md:text-base text-center mt-3 mb-2"
-                    style={{ wordWrap: "break-word", maxWidth: "100%" }}
+                    
                   >
                     Your order details are not available. Please check your
                     order

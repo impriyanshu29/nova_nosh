@@ -11,6 +11,8 @@ import { IoPersonOutline } from "react-icons/io5";
 import { MdDashboardCustomize } from "react-icons/md";
 import { GoPackage } from "react-icons/go";
 import { CiHeart } from "react-icons/ci";
+import { MdOutlineTableBar } from "react-icons/md";
+
 import { BsPencil } from "react-icons/bs";
 import { signOutSuccess } from "../../Redux/User-Slice/userSlice";
 import { resetAddress } from "../../Redux/User-Slice/addressSlice";
@@ -42,7 +44,7 @@ const menuItems = [
     href: "/orderStatus",
   },
   {
-    name: "Reservations",
+    name: "Book Table",
     href: "/reservations",
   },
 
@@ -170,13 +172,13 @@ function Header() {
 
                 {showDropdown && (
                   <div
-                    className="absolute top-full right-0 z-50 bg-white shadow-md rounded-md w-auto overflow-hidden transition-all duration-200 ease-in-out transform translate-y-1 "
+                    className="absolute top-full right-0 z-50 bg-white shadow-md rounded-md w-auto px-2 overflow-hidden transition-all duration-200 ease-in-out transform translate-y-1 "
                     style={{
                       opacity: showDropdown ? 1 : 0,
                       pointerEvents: showDropdown ? "auto" : "none",
                     }}
                   >
-                    <div className="p-4 flex flex-col items-center">
+                    <div className="px-8 py-2 flex flex-col items-start">
                       <div className="space-y-2">
                         {currentUser.message.user.isAdmin ? (
                           <Link
@@ -213,6 +215,17 @@ function Header() {
                           >
                             <CiHeart className="text-2xl font-semibold mx-3" />
                            Wishlist
+                          </Link>
+                        )}
+
+{currentUser.message.user.isAdmin ? null : (
+                          <Link
+                            to="/account?pro=myTable"
+                            className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
+                          >
+                            < MdOutlineTableBar
+                            className="text-2xl font-semibold mx-3" />
+                          Table
                           </Link>
                         )}
 
@@ -352,6 +365,13 @@ function Header() {
                       className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
                     >
                       Wishlist
+                    </Link>
+                    <Link
+                      key="address"
+                      to="/account?pro=myTable"
+                      className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
+                    >
+                      My Table
                     </Link>
                     <Link
                       key="address"

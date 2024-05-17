@@ -4,9 +4,18 @@ import { Schema } from 'mongoose';
 
 const TableSchema = new Schema(
     {
-        name:{
+      
+        email:{
             type : String,
             required : true
+        },
+        phone:{
+            type : Number,
+            required : true
+        },
+        message:{
+            type : String,
+           
         },
         capacity:{
             type : Number,
@@ -20,7 +29,7 @@ const TableSchema = new Schema(
             type : Date
         },
         reservedTime:{
-            type : Date
+            type : String,
         },
         userId:{
             type : Schema.Types.ObjectId,
@@ -36,6 +45,10 @@ const TableSchema = new Schema(
         },
         event:{
             type:String,
+            default : null
+        },
+        message:{
+            type : String,
             default : null
         }
         

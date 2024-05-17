@@ -8,6 +8,7 @@ import EditMenu from "./AdminSide/EditMenu/EditMenu";
 import UpdateMenu from "./AdminSide/EditMenu/UpdateMenu.jsx";
 import OrderList from "./AdminSide/Orders/OrderList.jsx";
 import OrderID from "./AdminSide/Orders/OrderId.jsx";
+import TableList from "./AdminSide/Table/TableList.jsx";
 function Profile() {
   const location = useLocation();
   const [tab, setTab] = useState("");
@@ -33,6 +34,7 @@ function Profile() {
           {tab.startsWith('editMenu-')&& tab.length > 'editMenu-'.length && <EditMenu />}
           {tab === "orderList" && <OrderList/>}
          {tab === "orderId" && <OrderID/>}
+         {tab === "tableList" && <TableList/>}
          
         </div>
       )}

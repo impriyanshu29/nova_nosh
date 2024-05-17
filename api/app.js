@@ -23,7 +23,7 @@ import cartRoute from './routes/cart.routes.js'
 import paymentRoute from './routes/payment.routes.js'
 import orderRoute from './routes/order.routes.js'
 import tableRoute from './routes/table.routes.js'
-
+import contactRoute from './routes/contact.routes.js'
 
 app.use(cookieParser());
 app.use('/api/test', testRoute);
@@ -35,6 +35,7 @@ app.use('/api/cart', cartRoute)
 app.use('/api/payment',paymentRoute )
 app.use('/api/order',orderRoute )
 app.use('/api/table',tableRoute )
+app.use('/api/contact',contactRoute )
 export default app;
 
 

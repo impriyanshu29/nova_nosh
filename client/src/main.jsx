@@ -30,6 +30,7 @@ import Cart from './Pages/Cart.jsx'
 import Checkout from './Pages/Checkout.jsx'
 import OrderStatus from './Pages/OrderStatus.jsx'
 import OrderDetails from './Pages/OrderDetails.jsx'
+import EditTable from './Pages/EditTable.jsx'
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,17 @@ const router = createBrowserRouter([
           {
             index:true,
             element:<Menu/>
+          }
+        ]
+      
+      },
+      {
+        path: '/account/editTable/:tableId',
+        element:<Private_Route/>,
+        children:[
+          {
+            index:true,
+            element:<EditTable/>
           }
         ]
       

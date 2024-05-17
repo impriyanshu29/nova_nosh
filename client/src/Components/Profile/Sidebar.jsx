@@ -145,12 +145,12 @@ function Sidebar() {
                 <span className="mx-8 text-sm font-medium">My Wishlist</span>
               </NavLink>
               <NavLink
-                to="/account?pro=notifications"
+                to="/account?pro=myTable"
                 className={`flex transform items-center  px-3 py-2 text-gray-600 transition-colors duration-300 hover:bg-gray-100 hover:text-gray-700 hover:underline ${
-                  pro === "notifications" ? "bg-gray-200 text-gray-800" : ""
+                  pro === "myTable" ? "bg-gray-200 text-gray-800" : ""
                 }`}
               >
-                <span className="mx-8 text-sm font-medium">Notifications</span>
+                <span className="mx-8 text-sm font-medium">My Table</span>
               </NavLink>
               <NavLink
                 to="/account?pro=reviews"

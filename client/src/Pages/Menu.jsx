@@ -185,7 +185,7 @@ function Menu() {
             Our Popular Menu
           </p>
           <p className="max-w-4xl mx-auto text-center text-base font-body_font   text-gray-600 md:text-xl">
-            Experience our most popular dishes—crafted with care and bursting
+            Experience our most popular dishes crafted with care and bursting
             with flavor. From sizzling starters to hearty mains, indulge in the
             favorites our customers can't stop raving about!
           </p>

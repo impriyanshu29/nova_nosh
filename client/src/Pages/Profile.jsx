@@ -4,6 +4,8 @@ import Sidebar from "../Components/Profile/Sidebar.jsx";
 import Card_Profile from "../Components/Profile/Card_Profile.jsx";
 import Address_Profile from "../Components/Profile/Address_Profile.jsx";
 import WhistList from "./WhistList.jsx";
+import MyTable from "./MyTable.jsx";
+import EditTable from "./EditTable.jsx";
 function Profile() {
   const location = useLocation();
   const [tab, setTab] = useState("");
@@ -22,6 +24,8 @@ function Profile() {
       {tab === "profile" && <Card_Profile />}
       {tab=== "address" && <Address_Profile />}
       {tab === "wishlist" && <WhistList />}
+      {tab === "myTable" && <MyTable />}
+      
     </div>
   );
 }

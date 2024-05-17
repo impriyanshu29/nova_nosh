@@ -22,8 +22,6 @@ export const getOrder = asyncHandler(async (req, res, next) => {
             startIndex = parseInt(req.query.startIndex);
         }
         const sortDirection = req.query.order === "asc" ? 1 : -1;
-
-      
         const order = await Order.find({
              user: userId ,
              ...(req.query.orderId && { _id: req.query.orderId })
