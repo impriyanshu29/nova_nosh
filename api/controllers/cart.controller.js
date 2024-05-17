@@ -2,7 +2,7 @@ import express from "express";
 import Menu from "../models/menu.model.js";
 import asyncHandler from "../helper/asyncHandler.js";
 import apiResponse from "../helper/apiResponse.js";
-import ApiError from "../helper/ApiError.js";
+import ApiError from "../helper/apiError.js";
 
 import Cart from "../models/cart.model.js";
 
