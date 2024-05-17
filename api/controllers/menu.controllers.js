@@ -1,7 +1,7 @@
 import Menu from "../models/menu.model.js";
 import asyncHandler from "../helper/asyncHandler.js";
 import apiResponse from "../helper/apiResponse.js";
-import ApiError from "../helper/ApiError.js";
+import ApiError from "../helper/apiError.js";
 import User from "../models/user.model.js";
 
 export const createMenu = asyncHandler(async (req, res) => {
