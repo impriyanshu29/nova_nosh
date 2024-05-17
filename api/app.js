@@ -11,7 +11,7 @@ app.use(cors());
 app.use(cookieParser());
 
 // Import routes
-import testRoute from './routes/test.routes.js';
+
 import authRoute from './routes/auth.routes.js';
 import addressRoute from './routes/address.routes.js';
 import menuRoute from './routes/menu.routes.js';
@@ -23,7 +23,7 @@ import tableRoute from './routes/table.routes.js';
 import contactRoute from './routes/contact.routes.js';
 
 // Use routes
-app.use('/api/test', testRoute);
+
 app.use('/api/auth', authRoute);
 app.use('/api/add', addressRoute);
 app.use('/api/menu', menuRoute);
