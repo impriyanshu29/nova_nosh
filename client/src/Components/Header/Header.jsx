@@ -54,6 +54,51 @@ const menuItems = [
   },
 ];
 
+const mobileMenuItems = [
+  {
+    name: "Home",
+    href: "/",
+  },
+  {
+    name: "Menu",
+    href: "/menu",
+  },
+  {
+    name: "Cart",
+    href: "/cart",
+  },
+  {
+    name: "Wishlists",
+    href: "/account?pro=wishlist",
+  },
+  {
+    name: "Book Table",
+    href: "/reservations",
+  },
+
+  {
+    name: "Orders ",
+    href: "/orderStatus",
+  },
+  {
+    name: "My Table",
+    href: "/account?pro=myTable",
+  },
+  {
+    name: "My Address",
+    href: "/account?pro=address",
+  },
+
+  {
+    name: "Contact Us",
+    href: "/contact",
+  },
+  {
+    name: "About",
+    href: "/about",
+  },
+];
+
 import { useNavigate } from "react-router-dom";
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -69,44 +114,40 @@ function Header() {
   const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
-     
       const refreshRes = await fetch(`/api/auth/refreshToken`, {
         method: "GET",
         credentials: "include",
       });
-  
-    const dataRefresh = await refreshRes.json();
-     if (!refreshRes.ok) {
-       const data = await refreshRes.json();
-       dispatch(updateFail(data.error));
-       
-       setTimeout(() => {
-        
-         dispatch(clearError());
-       }, 4000);
-       return;
-     }
- 
-     dispatch(updateSuccess(dataRefresh));
-     const res = await fetch('/api/auth/logout',{
-       method:"POST",
-     });
- 
-     if(!res.ok) {
-      setError(error.message)
-      
-     }
-     dispatch(signOutSuccess()),
-     dispatch(resetAddress()),
-     dispatch(resetCart()),
-   navigate("/")
-    } catch (error) {
-     setError(error.message)
-    }
- 
-   }
 
-  const {cart} = useSelector((state) => state.cart)
+      const dataRefresh = await refreshRes.json();
+      if (!refreshRes.ok) {
+        const data = await refreshRes.json();
+        dispatch(updateFail(data.error));
+
+        setTimeout(() => {
+          dispatch(clearError());
+        }, 4000);
+        return;
+      }
+
+      dispatch(updateSuccess(dataRefresh));
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (!res.ok) {
+        setError(error.message);
+      }
+      dispatch(signOutSuccess()),
+        dispatch(resetAddress()),
+        dispatch(resetCart()),
+        navigate("/");
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const { cart } = useSelector((state) => state.cart);
   const totalItems = cart?.data?.totalQuantity;
   return (
     <div className="relative bg-zinc-50 w-full ">
@@ -139,14 +180,12 @@ function Header() {
         <div className="hidden  lg:flex lg:items-center lg:justify-end">
           <div className="hidden lg:block rounded-full p-3">
             <Link className="relative" to="/cart">
-            <HiOutlineShoppingCart className="h-6 w-6 cursor-pointer" />
-            {totalItems > 0 && ( 
-        <span
-          className="absolute -top-1 -right-1 bg-[#E52A3D] text-white text-xs rounded-full px-1 "
-        >
-          {totalItems}
-        </span>
-      )}
+              <HiOutlineShoppingCart className="h-6 w-6 cursor-pointer" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#E52A3D] text-white text-xs rounded-full px-1 ">
+                  {totalItems}
+                </span>
+              )}
             </Link>
           </div>
 
@@ -214,18 +253,17 @@ function Header() {
                             className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
                           >
                             <CiHeart className="text-2xl font-semibold mx-3" />
-                           Wishlist
+                            Wishlist
                           </Link>
                         )}
 
-{currentUser.message.user.isAdmin ? null : (
+                        {currentUser.message.user.isAdmin ? null : (
                           <Link
                             to="/account?pro=myTable"
                             className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
                           >
-                            < MdOutlineTableBar
-                            className="text-2xl font-semibold mx-3" />
-                          Table
+                            <MdOutlineTableBar className="text-2xl font-semibold mx-3" />
+                            Table
                           </Link>
                         )}
 
@@ -255,11 +293,21 @@ function Header() {
           </div>
         </div>
 
-
-
         {/* Mobile View */}
+        <div className="flex lg:hidden gap-6 justify-around">
+        <div className=" lg:hidden rounded-full ">
+            <Link className="relative" to="/cart">
+              <HiOutlineShoppingCart className="h-6 w-6 cursor-pointer" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#E52A3D] text-white text-xs rounded-full px-1 ">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+          </div>
         <div className="lg:hidden">
           <IoMdMenu onClick={toggleMenu} className="h-6 w-6 cursor-pointer" />
+        </div>
         </div>
         {isMenuOpen && (
           <div className="fixed inset-0 z-50 flex lg:hidden justify-end">
@@ -341,47 +389,41 @@ function Header() {
                 </button>
               </div>
               <nav className="flex-1 p-4 overflow-y-auto">
-                {menuItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-                {currentUser && ! currentUser.message.user.isAdmin ? (
-                  <>
-                  <Link
-                      key="cart"
-                      to="/cart"
-                      className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
-                    >
-                      Cart
-                    </Link>
-                    <Link
-                      key="wishlist"
-                      to="/account?pro=wishlist"
-                      className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
-                    >
-                      Wishlist
-                    </Link>
-                    <Link
-                      key="address"
-                      to="/account?pro=myTable"
-                      className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
-                    >
-                      My Table
-                    </Link>
-                    <Link
-                      key="address"
-                      to="/account?pro=address"
-                      className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
-                    >
-                      My Address
-                    </Link>
-                  </>
-                ) : null}
+                {mobileMenuItems.map((item) => {
+                  if (currentUser && !currentUser.message.user.isAdmin) {
+                    return (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
+                        onClick={toggleMenu}
+                      >
+                        {item.name}
+                      </Link>
+                    );
+                  } else if (
+                    !currentUser &&
+                    (item.name === "Wishlists" ||
+                      item.name === "Cart" ||
+                      item.name === "My Address" ||
+                      item.name === "My Table")
+                  ) {
+                    return (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        className="block py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100"
+                        onClick={toggleMenu}
+                      >
+                        {item.name}
+                      </Link>
+                    );
+                  } else {
+                    return null;
+                  }
+                })}
+
+              
               </nav>
 
               {/* Sign in button */}

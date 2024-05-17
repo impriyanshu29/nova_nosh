@@ -237,6 +237,8 @@ function Checkout() {
           <div className="mx-auto bg-zinc-50  max-w-4xl ">
             <div className="overflow-hidden  rounded-xl  shadow-xl ">
               <div className="grid grid-cols-1  md:grid-cols-2">
+
+
                 {/* Address -> If no address than add else show address */}
     
                 {currentAddress === null ? (
@@ -440,7 +442,13 @@ function Checkout() {
                       <div className=" pt-2 font-medium text-green-700">
                         You will save ₹{showDiscount} on this order
                       </div>
-                      <div className="flex flex-col items-end">
+                      {currentAddress === null ? (
+                        <Link to="/account?pro=address">
+                          <button className="rounded-md bg-[#E52A3D] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-black/80">
+                            Add Address
+                          </button>
+                        </Link>
+                      ) : (
                         <button
                           type="button"
                           onClick={handlePayment}
@@ -448,7 +456,8 @@ function Checkout() {
                         >
                           Place Order
                         </button>
-                      </div>
+                      )}
+                      
                     </div>
                   </div>
                 </div>
