@@ -12,7 +12,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'build', // Output directory for the build
+    outDir: 'dist', // Output directory for the build
   },
   plugins: [react()],
 })

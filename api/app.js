@@ -36,11 +36,11 @@ app.use('/api/contact', contactRoute);
 
 // Serve static files from the React app
 const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, '../client/build'))); // Adjust the path
+app.use(express.static(path.join(__dirname, '../client/dist'))); // Adjust the path
 
 // The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html')); // Adjust the path
+  res.sendFile(path.join(__dirname, '../client/dist', 'index.html')); // Adjust the path
 });
 
 // Global error handler
