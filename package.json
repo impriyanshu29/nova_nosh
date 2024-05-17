@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node --watch api/index.js",
     "start": "node api/index.js",
-    "build": "npm install && npm install --prefix client && npm run build --prefix client && cp -r client/dist api/dist"
+    "build": "npm install && npm install --prefix client && npm run build --prefix client"
   },
   "repository": {
     "type": "git",
