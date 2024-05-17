@@ -2,15 +2,10 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
+
 
 // Load environment variables from .env file
 dotenv.config();
-
-// Create __dirname equivalent in ES module scope
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -30,8 +25,10 @@ import paymentRoute from './routes/payment.routes.js';
 import orderRoute from './routes/order.routes.js';
 import tableRoute from './routes/table.routes.js';
 import contactRoute from './routes/contact.routes.js';
-
+import path from 'path';
 // Use routes
+
+const __dirname = path.resolve();
 app.use('/api/test', testRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/add', addressRoute);
@@ -44,10 +41,10 @@ app.use('/api/table', tableRoute);
 app.use('/api/contact', contactRoute);
 
 // Serve static files
-app.use(express.static(path.join(__dirname, '/client/src')));
+app.use(express.static(path.join(__dirname, '/client')));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '/client/dist/index.html'));
+  res.sendFile(path.join(__dirname, '/client/index.html'));
 });
 
 // Global error handler
