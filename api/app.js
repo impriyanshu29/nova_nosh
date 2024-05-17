@@ -1,10 +1,12 @@
 import express from 'express';
-import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import path from 'path';
 
 const app = express();
 
+// Middleware
+app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
@@ -32,13 +34,13 @@ app.use('/api/order', orderRoute);
 app.use('/api/table', tableRoute);
 app.use('/api/contact', contactRoute);
 
+// Serve static files from the React app
 const __dirname = path.resolve();
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../client/build'))); // Adjust the path
 
-// Fallback route to serve the index.html
+// The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html')); // Adjust the path
 });
 
 // Global error handler
