@@ -40,7 +40,7 @@ app.use(express.static(path.join(__dirname, '../client/dist'))); // Adjust the p
 
 // The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist', 'index.html')); // Adjust the path
+  res.sendFile(path.join(__dirname, 'client','dist', 'index.html')); // Adjust the path
 });
 
 // Global error handler
