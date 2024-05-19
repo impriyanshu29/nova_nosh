@@ -40,34 +40,40 @@ Follow these steps to set up the project locally:
     npm install
     ```
 
-3. **Set up environment variables:**
-   Create a `.env` file in the root directory and add the following variables:
-    ```env for api server
-   MONGODB_URL=mongodb://localhost:27017/nova_nosh
+3. **Set up environment variables**
+
+Create a `.env` file in the root directory and add the following variables:
+
+### For API Server
+
+```env
+MONGODB_URL=mongodb://localhost:27017/nova_nosh
 PORT=7000
 CORS_ORIGIN=*
-MAIL_USER ="apikey"
-MAIL_PASS ="apipass"
-DOMAIN = http://localhost:5173
-SENDER_EMAIL ='abc@email.com'
-COMPANY_NAME = Nova Nosh
+MAIL_USER="apikey"
+MAIL_PASS="apipass"
+DOMAIN=http://localhost:5173
+SENDER_EMAIL='abc@email.com'
+COMPANY_NAME=Nova Nosh
 REFRESH_TOKEN_SECRET=
 ACCESS_TOKEN_SECRET=
-REFRESH_TOKEN_SECRET_EXPIRE =18d
-ACCESS_TOKEN_SECRET_EXPIRE = 1d
-RAZORPAY_KEY_ID =rzp_test_1X2X3X4X5X6X7X8X9X0X
-RAZORPAY_KEY_SECRET = 1X2X3X4X5X6X7X8X9X0X
+REFRESH_TOKEN_SECRET_EXPIRE=18d
+ACCESS_TOKEN_SECRET_EXPIRE=1d
+RAZORPAY_KEY_ID=rzp_test_1X2X3X4X5X6X7X8X9X0X
+RAZORPAY_KEY_SECRET=1X2X3X4X5X6X7X8X9X0X
 SENDGRID_API_KEY="apikey"
 HELP_URL=https://yourdomain.com/help
 PRIVACY_POLICY_URL=https://yourdomain.com/privacy-policy
 
-    ```
-    ```env for client
+```
+### For Client
+
+```env for client
 VITE_FIREBASE_API_KEY="AIzaSyD1-1X2X3X4X5X6X7X8X9X0X"
 VITE_FIREBASE_APP_ID ="1:web:1X2X3X4X5X6X7X8X9X0X"
 VITE_FIREBASE_MESSAGING_SENDER_ID="1x2x3x4x5x6x7x8x9x0x" "
 VITE_RAZORPAY_KEY_ID =rzp_test_1X2X3X4X5X6X7X8X9X0X
-    ```
+```
 
 4. **Start the development server:**
     ```bash
