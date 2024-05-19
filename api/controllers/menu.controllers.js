@@ -28,6 +28,7 @@ export const createMenu = asyncHandler(async (req, res) => {
         .json(new apiResponse(401, "You are not authorized to create menu"));
     }
 
+   
     if (
       !menuName ||
       !menuDescription ||
@@ -135,7 +136,7 @@ export const getMenu = asyncHandler(async (req, res) => {
         ],
       }),
     })
-      .sort({ updateAt: sortDirection })
+      .sort({ createdAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
 

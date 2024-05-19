@@ -4,7 +4,7 @@ import ApiError from "../helper/apiError.js";
 import User from "../models/user.model.js";
 import Order from "../models/orders.models.js";
 import OrderStatus from "../models/orderStatus.models.js";
-
+import Menu from "../models/menu.model.js";
 export const getOrder = asyncHandler(async (req, res, next) => {
     try {
         const userId = req.params.userId;
@@ -177,3 +177,19 @@ export const orderStatus = asyncHandler(async (req, res) => {
     }
 }
 )
+
+
+export const Totals = asyncHandler(async (req, res) => {
+    try {
+        const totalUser = await User.countDocuments();
+        const totalOrder = await Order.countDocuments();
+        const totalMenu = await Menu.countDocuments();
+        
+        return res
+        .status(200)
+        .json(new apiResponse({totalUser,totalOrder,totalMenu}, "Total fetched successfully", 200));
+        
+    } catch (error) {
+        throw new ApiError(500, "Error in fetching Data" );
+    }
+})

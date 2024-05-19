@@ -455,9 +455,33 @@ export const logOut = asyncHandler(async (req, res) => {
 // ---------------------------------------------------------------------------------------------------------------------------
 // refreshToken function------------------------------------------------------------------------------------------------------
 export const refreshAccessToken = asyncHandler(async(req,res,next)=>{
+  const userId = req.query.UserID
    const refreshToken =  req.cookies.refreshToken;
    if(!refreshToken){
-    throw new ApiError(401,"Unauthorized: Token is missing");
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          refreshToken: undefined,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+  
+  
+    const options = {
+      httpOnly: true,
+      secure: true,
+      expires: new Date(0),
+    };
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new apiResponse(200, undefined, "Logged out successfully"));
+  
    }
    const user = await User.findOne({ refreshToken: refreshToken });
 

@@ -113,11 +113,15 @@ function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = async () => {
+    const userID = currentUser?.message?.user?._id;
     try {
-      const refreshRes = await fetch(`/api/auth/refreshToken`, {
-        method: "GET",
-        credentials: "include",
-      });
+      const refreshRes = await fetch(
+        `/api/auth/refreshToken?userID=${userID}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
 
       const dataRefresh = await refreshRes.json();
       if (!refreshRes.ok) {
@@ -144,6 +148,10 @@ function Header() {
         navigate("/");
     } catch (error) {
       setError(error.message);
+      dispatch(signOutSuccess()),
+        dispatch(resetAddress()),
+        dispatch(resetCart()),
+        navigate("/");
     }
   };
 
@@ -295,7 +303,7 @@ function Header() {
 
         {/* Mobile View */}
         <div className="flex lg:hidden gap-6 justify-around">
-        <div className=" lg:hidden rounded-full ">
+          <div className=" lg:hidden rounded-full ">
             <Link className="relative" to="/cart">
               <HiOutlineShoppingCart className="h-6 w-6 cursor-pointer" />
               {totalItems > 0 && (
@@ -305,9 +313,9 @@ function Header() {
               )}
             </Link>
           </div>
-        <div className="lg:hidden">
-          <IoMdMenu onClick={toggleMenu} className="h-6 w-6 cursor-pointer" />
-        </div>
+          <div className="lg:hidden">
+            <IoMdMenu onClick={toggleMenu} className="h-6 w-6 cursor-pointer" />
+          </div>
         </div>
         {isMenuOpen && (
           <div className="fixed inset-0 z-50 flex lg:hidden justify-end">
@@ -403,10 +411,12 @@ function Header() {
                     );
                   } else if (
                     !currentUser &&
-                    (item.name === "Wishlists" ||
-                      item.name === "Cart" ||
-                      item.name === "My Address" ||
-                      item.name === "My Table")
+                    (item.name === "Home" ||
+                      item.name === "Menu" ||
+                      item.name === "Wishlists" ||
+                      item.name === "Book Table" ||
+                      item.name === "Contact Us" ||
+                      item.name === "About")
                   ) {
                     return (
                       <Link
@@ -422,8 +432,6 @@ function Header() {
                     return null;
                   }
                 })}
-
-              
               </nav>
 
               {/* Sign in button */}

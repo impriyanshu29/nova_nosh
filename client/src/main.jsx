@@ -132,9 +132,17 @@ const router = createBrowserRouter([
         path:'/reservations',
         element:<Reservation/>
       },
+     
       {
         path:'/contact',
-        element:<Contact/>
+        element:<Private_Route/>,
+        children:[
+          {
+            index:true,
+            element:<Contact/>
+          }
+        ]
+      
       },
       {
         path:'/verifyEmail',

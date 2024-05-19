@@ -3,7 +3,8 @@ import Delivery from "../assets/Images/DI.png";
 import { Link } from "react-router-dom";
 import O_auth from "../Components/O-auth/O_auth.jsx";
 import { useState } from "react";
-
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 function SignUp() {
   const [formData, setFormData] = useState({});
@@ -58,7 +59,11 @@ function SignUp() {
     }
   }
   
-  
+  const [showPassword , setShowPassword] = useState(false)
+ 
+  const handleShowPassword = () =>{
+    setShowPassword(!showPassword)
+  }
 
 
   return (
@@ -92,19 +97,19 @@ function SignUp() {
               <div className="space-y-5">
               <div className="grid grid-cols-2 md:gap-16 pb-2 md:pb-0 gap-4">
             <div className="col-span-1">
-              <label htmlFor="firstName" className="block text-sm my-3 font-semibold text-gray-700">
+              <label htmlFor="firstName" className="block text-sm my-3 font-semibold text-gray-900  ">
                 First Name
               </label>
               <input
                 id="firstName"
                 type="text"
-                className="input-field border hover:shadow-md hover:rounded-xl px-4 py-2 bg-transparent rounded-md w-full text-gray-600 focus:outline-none"
+                className="input-field border hover:shadow-md hover:rounded-xl px-4 py-2 bg-transparent rounded-md w-full text-gray-600 focus:outline-none "
                 placeholder="First Name"
                 onChange={handleChanges}
               />
             </div>
             <div className="col-span-1">
-              <label htmlFor="lastName" className="block text-sm my-3  font-semibold text-gray-700">
+              <label htmlFor="lastName" className="block text-sm my-3    font-semibold text-gray-900">
                 Last Name
               </label>
               <input
@@ -146,13 +151,18 @@ function SignUp() {
                     </label>
                   </div>
                   <div className="mt-2">
+                  <div className='flex flex-row  rounded hover:shadow-md hover:rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1'>
                     <input
-                      className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                      type="password"
-                      id="password"
-                        onChange={handleChanges}
+                      className="flex h-10 w-full bg-transparent px-3 border-0 py-2 text-sm placeholder:text-gray-400  disabled:cursor-not-allowed disabled:opacity-50"
+                      type= {showPassword?"text":"password"}
+                      id='password'
+                      onChange={handleChanges}
                       placeholder="Password"
-                    ></input>
+                    />
+                    <div className='-ml-8 text-center my-auto cursor-pointer'>
+                      {showPassword ? <FaEyeSlash onClick={handleShowPassword}/> : <FaEye onClick={handleShowPassword}/>}
+                    </div>
+                    </div>
                   </div>
                 </div>
                 <div>

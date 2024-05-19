@@ -4,15 +4,20 @@ import { Link, useNavigate } from 'react-router-dom';
 import O_auth from '../Components/O-auth/O_auth.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInFail, signInSuccess } from '../Redux/User-Slice/userSlice';
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa6";
 
 function SignIn() {
   const [formData, setFormData] = useState({});
   const { loading, error } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const [showPassword , setShowPassword] = useState(false)
   const handleChanges = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+  }
+  const handleShowPassword = () =>{
+    setShowPassword(!showPassword)
   }
 
   const handleSubmit = async (e) => {
@@ -91,13 +96,18 @@ function SignIn() {
                     
                   </div>
                   <div className="mt-2">
+                    <div className='flex flex-row  rounded hover:shadow-md hover:rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1'>
                     <input
-                      className="flex h-10 w-full rounded hover:shadow-md hover:rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                      type="password"
+                      className="flex h-10 w-full bg-transparent px-3 border-0 py-2 text-sm placeholder:text-gray-400  disabled:cursor-not-allowed disabled:opacity-50"
+                      type= {showPassword?"text":"password"}
                       id='password'
                       onChange={handleChanges}
                       placeholder="Password"
                     />
+                    <div className='-ml-8 text-center my-auto cursor-pointer'>
+                      {showPassword ? <FaEyeSlash onClick={handleShowPassword}/> : <FaEye onClick={handleShowPassword}/>}
+                    </div>
+                    </div>
                   </div>
                 </div>
                 {/* Submit button */}
