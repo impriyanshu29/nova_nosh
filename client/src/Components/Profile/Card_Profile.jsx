@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFail, updateSuccess, updateStart, clearError,deleteUserSuccess,deleteUserFail,deleteUserStart } from '../../Redux/User-Slice/userSlice';
 import { Navigate } from 'react-router-dom';
+import { resetCart } from "../../Redux/Cart-slice/cartSlice";
+import { signOutSuccess } from "../../Redux/User-Slice/userSlice";
+import { resetAddress } from "../../Redux/User-Slice/addressSlice";
 
+
+import { useNavigate } from "react-router-dom";
 function CardProfile() {
   const [formData, setFormData] = useState({});
   const [updateMessage, setUpdateMessage] = useState('');
@@ -13,7 +18,8 @@ function CardProfile() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
-
+  const userID = currentUser?.message?.user?._id;
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (Object.keys(formData).length === 0) {
@@ -22,7 +28,7 @@ function CardProfile() {
   
     try {
       
-      const refreshRes = await fetch(`/api/auth/refreshToken`, {
+      const refreshRes = await fetch(`/api/auth/refreshToken?userID=${userID}`, {
         method: "GET",
         credentials: "include",
       });
@@ -35,7 +41,12 @@ function CardProfile() {
        setTimeout(() => {
         
          dispatch(clearError());
+         
        }, 4000);
+       dispatch(signOutSuccess()),
+         dispatch(resetAddress()),
+         dispatch(resetCart()),
+         navigate("/signIn");
        return;
      }
  

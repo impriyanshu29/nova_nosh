@@ -231,6 +231,7 @@ function Header() {
                           <Link
                             to="/dashboard?tab=dashboard"
                             className="text-gray-800 hover:text-gray-600 p-2 flex items-center space-x-2"
+                            onClick={() => setShowDropdown(false)}
                           >
                             <MdDashboardCustomize className="text-xl" />
                             <span className="whitespace-nowrap">Dashboard</span>

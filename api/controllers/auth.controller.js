@@ -476,6 +476,7 @@ export const refreshAccessToken = asyncHandler(async(req,res,next)=>{
       secure: true,
       expires: new Date(0),
     };
+    console.log("Inside refresh token")
     return res
     .status(200)
     .clearCookie("accessToken", options)
@@ -608,3 +609,42 @@ export const deleteUser = asyncHandler(async (req, res,next) => {
 );
 
 // ---------------------------------------------------------------------------------------------------------------------------
+// GetProfile
+export const getUsers = asyncHandler(async (req, res) => {
+  try {
+    
+    const isAdmin = req.user.isAdmin;
+    if (!isAdmin) {
+      throw new ApiError(403, "Unauthorized");
+    }
+    const users = await User.find({}).select("-password -refreshToken");
+    return res
+    .status(200)
+    .json(new apiResponse(users, "User Fetched Successfully", 200));
+
+  } catch (error) {
+    throw new ApiError(500, "Internal server error");
+  }
+}
+);
+
+export const deleteUserById = asyncHandler(async (req, res) => {
+  try {
+    const isAdmin = req.user.isAdmin;
+    if (!isAdmin) {
+      throw new ApiError(403, "Unauthorized");
+    }
+    const user = await User.findByIdAndDelete(req.params.userId);
+
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+
+    return res
+      .status(200)
+      .json(new apiResponse(200, "User deleted successfully"));
+  } catch (error) {
+    throw new ApiError(500, "Internal server error");
+  }
+}
+);

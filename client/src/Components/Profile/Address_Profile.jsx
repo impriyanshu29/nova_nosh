@@ -10,18 +10,21 @@ import {
   addAddressStart,
   addAddressSuccess,
 } from "../../Redux/User-Slice/addressSlice";
-
+import { resetCart } from "../../Redux/Cart-slice/cartSlice";
+import { signOutSuccess } from "../../Redux/User-Slice/userSlice";
+import { resetAddress } from "../../Redux/User-Slice/addressSlice";
+import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+
 import { set } from "mongoose";
 function Address_Profile() {
+  const location = useLocation();
+  const urlParams = new URLSearchParams(location.search);
+  //eg: http://localhost:3000/profile?pro=address
+  //then myParam will be address and urlParams will be
+  const myParam = urlParams.get("pro");
+  //
 
-    const location = useLocation();
-    const  urlParams = new URLSearchParams(location.search);
-    //eg: http://localhost:3000/profile?pro=address
-    //then myParam will be address and urlParams will be  
-    const myParam = urlParams.get("pro");
-    //
-    
   const [pincode, setPinCode] = useState("");
   const [load, setLoading] = useState(false);
 
@@ -32,55 +35,61 @@ function Address_Profile() {
   );
   const dispatch = useDispatch();
   const [updateMessage, setUpdateMessage] = useState("");
+  const userID = currentUser?.message?.user?._id;
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
-        try {
-            if (myParam && myParam === 'address') {
-                
-                const refreshRes = await fetch(`/api/auth/refreshToken`, {
-                    method: "GET",
-                    credentials: "include",
-                });
-
-                const dataRefresh = await refreshRes.json();
-                if (!refreshRes.ok) {
-                    dispatch(updateFail(dataRefresh.error));
-                    setUpdateMessage("Please clear cookies and sign in again");
-                    setTimeout(() => {
-                        setUpdateMessage(null);
-                        dispatch(clearError());
-                    }, 4000);
-                    return;
-                }
-
-                dispatch(updateSuccess(dataRefresh));
-                const userId = currentUser?.message?.user?._id;
-                dispatch(addAddressStart());
-                const res = await fetch(`/api/add/getAddress?userId=${userId}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    dispatch(addAddressSuccess(data));
-                } else {
-                    dispatch(addAddressFail(data.message));
-                }
+      try {
+        if (myParam && myParam === "address") {
+          const refreshRes = await fetch(
+            `/api/auth/refreshToken?userID=${userID}`,
+            {
+              method: "GET",
+              credentials: "include",
             }
-        } catch (error) {
-            dispatch(addAddressFail(error.message));
+          );
+
+          const dataRefresh = await refreshRes.json();
+          if (!refreshRes.ok) {
+            dispatch(updateFail(dataRefresh.error));
+            setUpdateMessage("Please clear cookies and sign in again");
             setTimeout(() => {
-                dispatch(clearError());
+              setUpdateMessage(null);
+              dispatch(clearError());
             }, 4000);
+            dispatch(signOutSuccess()),
+              dispatch(resetAddress()),
+              dispatch(resetCart()),
+              navigate("/signIn");
+            return;
+          }
+
+          dispatch(updateSuccess(dataRefresh));
+          const userId = currentUser?.message?.user?._id;
+          dispatch(addAddressStart());
+          const res = await fetch(`/api/add/getAddress?userId=${userId}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await res.json();
+          if (res.ok) {
+            dispatch(addAddressSuccess(data));
+          } else {
+            dispatch(addAddressFail(data.message));
+          }
         }
+      } catch (error) {
+        dispatch(addAddressFail(error.message));
+        setTimeout(() => {
+          dispatch(clearError());
+        }, 4000);
+      }
     };
 
     fetchData();
-}, [location.search, myParam, dispatch]);
-
-
+  }, [location.search, myParam, dispatch]);
 
   const handlepinCodeChange = (e) => {
     setPinCode(e.target.value);
@@ -90,22 +99,27 @@ function Address_Profile() {
     e.preventDefault();
     try {
       dispatch(addAddressStart());
-        
-      const refreshToken = currentUser.message.refreshToken;
-      const refreshRes = await fetch(`/api/auth/refreshToken?refresh=${refreshToken}`, {
-        method: "GET",
-        credentials: "include",
-      });
+
+      const refreshRes = await fetch(
+        `/api/auth/refreshToken?userID=${userID}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
 
       const dataRefresh = await refreshRes.json();
       if (!refreshRes.ok) {
-       
         dispatch(updateFail(dataRefresh.error));
         setUpdateMessage("Please clear cookies and sign in again");
         setTimeout(() => {
           setUpdateMessage(null);
           dispatch(clearError());
         }, 4000);
+        dispatch(signOutSuccess()),
+          dispatch(resetAddress()),
+          dispatch(resetCart()),
+          navigate("/signIn");
         return;
       }
 
@@ -149,7 +163,7 @@ function Address_Profile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       dispatch(addAddressStart());
       const res = await fetch(`/api/add/saveAddress`, {
@@ -186,8 +200,6 @@ function Address_Profile() {
       <div className="bg-white w-full mx-4 md:mx-0 max-w-2xl shadow-xl md:shadow-lg my-6  rounded-md px-6 md:px-16 py-10 ">
         <h1 className="text-3xl font-bold text-center mb-6">Address</h1>
         <form className="space-y-4" onSubmit={handleSubmit}>
-
-
           {/* Full Name  and  Mobile number */}
           <div className="grid grid-cols-2 md:gap-16 pb-2 md:pb-0 gap-4">
             <div className="col-span-1">
@@ -204,7 +216,7 @@ function Address_Profile() {
                 // defaultValue={currentUser?.message?.user?.firstName || ''}
                 placeholder="Full Name"
                 onChange={handleChange}
-                defaultValue={"" ||currentAddress?.status?.address?.fullName}
+                defaultValue={"" || currentAddress?.status?.address?.fullName}
               />
             </div>
             <div className="col-span-1">
@@ -220,7 +232,6 @@ function Address_Profile() {
                 className="input-field border hover:shadow-md hover:rounded-xl text-gray-600 px-4 py-2 rounded-md w-full focus:outline-none"
                 defaultValue={currentAddress?.status.address?.phoneNumber || ""}
                 placeholder="Phone Number"
-                
                 inputMode="numeric"
                 pattern="[0-9]*"
                 onChange={handleChange}
@@ -230,17 +241,15 @@ function Address_Profile() {
 
           {/* Pin Code */}
           <div className="md:grid md:grid-cols-2 md:gap-16">
-
             <div className="col-span-1 pb-2 md:pb-0 flex">
-                <div className="">
-              <label
-                htmlFor="pinCode"
-                className="block text-sm my-3 font-semibold text-gray-700"
-              >
-                Pin Code <span className="text-red-600">*</span>
-              </label>
+              <div className="">
+                <label
+                  htmlFor="pinCode"
+                  className="block text-sm my-3 font-semibold text-gray-700"
+                >
+                  Pin Code <span className="text-red-600">*</span>
+                </label>
 
-              
                 <input
                   id="pin_code"
                   type="text"
@@ -249,15 +258,12 @@ function Address_Profile() {
                   onChange={handlepinCodeChange}
                   defaultValue={currentAddress?.status?.address?.pin_code || ""}
                 />
-          
               </div>
               <div className="mt-12 mx-4 px-6 hover:text-green-700 font-semibold text-gray-600  cursor-pointer">
-                  <button type="button" onClick={handlePinCode}>
-                    {load ? "Verifying..." : "Verify"}
-                  </button>
-                </div>
-
-             
+                <button type="button" onClick={handlePinCode}>
+                  {load ? "Verifying..." : "Verify"}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -309,7 +315,7 @@ function Address_Profile() {
               id="houseNo"
               type="text"
               className="input-field border hover:shadow-md hover:rounded-xl text-gray-600 px-4 py-2 rounded-md w-full focus:outline-none"
-             defaultValue={currentAddress?.status?.address?.houseNo || ""}
+              defaultValue={currentAddress?.status?.address?.houseNo || ""}
               placeholder="House No,Building Name,Street Name"
               onChange={handleChange}
             />
@@ -326,7 +332,7 @@ function Address_Profile() {
               id="area"
               type="text"
               className="input-field border hover:shadow-md hover:rounded-xl text-gray-600 px-4 py-2 rounded-md w-full focus:outline-none"
-                defaultValue={currentAddress?.status.address?.area || ""}
+              defaultValue={currentAddress?.status.address?.area || ""}
               placeholder="Area,Colony,Locality"
               onChange={handleChange}
             />

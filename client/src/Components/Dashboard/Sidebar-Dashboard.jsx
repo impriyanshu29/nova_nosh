@@ -257,7 +257,7 @@ function SidebarDashboard() {
                       className="h-5 w-5 inline-block text-gray-600 "
                       aria-hidden="true"
                     />
-                    <h1 className="ml-2 text-gray-600 ">Order</h1>
+                    <h1 className="ml-2 text-gray-600 ">Table</h1>
                     <FaCaretRight
                       className="h-5 w-5 ml-6 text-gray-600"
                       aria-hidden="true"
@@ -265,16 +265,7 @@ function SidebarDashboard() {
                   </button>
                   {tableDropDown && (
                     <div className="pl-8">
-                      {/* <NavLink
-                        to="/dashboard?tab=createTable"
-                        className={`flex transform items-center rounded-lg gap-2 px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 hover:underline ${
-                          tab === "createTable"
-                            ? "bg-gray-200 text-gray-800"
-                            : ""
-                        }`}
-                      >
-                        <span className="text-sm font-medium">Add Table</span>
-                      </NavLink> */}
+                     
                       <NavLink
                         to="/dashboard?tab=tableList"
                         className={`flex transform items-center rounded-lg px-3 py-2 text-gray-600 transition-colors duration-300 hover:bg-gray-100 hover:text-gray-700 hover:underline ${
@@ -283,14 +274,7 @@ function SidebarDashboard() {
                       >
                         <span className=" text-sm font-medium">Table List</span>
                       </NavLink>
-                      {/* <NavLink
-                        to="/dashboard?tab=tableId"
-                        className={`flex transform items-center rounded-lg px-3 py-2 text-gray-600 transition-colors duration-300 hover:bg-gray-100 hover:text-gray-700 hover:underline ${
-                          tab === "tableId" ? "bg-gray-200 text-gray-800" : ""
-                        }`}
-                      >
-                        <span className=" text-sm font-medium">Table Id</span>
-                      </NavLink> */}
+                     
                     </div>
                   )}
                 </div>

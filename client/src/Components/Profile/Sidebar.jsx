@@ -12,11 +12,12 @@ import { BsFillPersonFill } from "react-icons/bs";
 import { resetAddress } from "../../Redux/User-Slice/addressSlice";
 import { resetCart } from "../../Redux/Cart-slice/cartSlice";
 
+import { useNavigate } from "react-router-dom";
 function Sidebar() {
   const location = useLocation();
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
-
+  const navigate = useNavigate();
   const [pro, setPro] = useState("");
   const [error, setError] = useState(null);
   useEffect(() => {
@@ -27,10 +28,11 @@ function Sidebar() {
     }
   }, [location.search]);
 
+  const userID = currentUser?.message?.user?._id;
   const handleLogout = async () => {
     try {
      
-     const refreshRes = await fetch(`/api/auth/refreshToken`, {
+     const refreshRes = await fetch(`/api/auth/refreshToken?userID=${userID}`, {
        method: 'GET',
        credentials: 'include',
      });
@@ -44,6 +46,10 @@ function Sidebar() {
         
          dispatch(clearError());
        }, 4000);
+       dispatch(signOutSuccess()),
+         dispatch(resetAddress()),
+         dispatch(resetCart()),
+         navigate("/signIn");
        return;
      }
  

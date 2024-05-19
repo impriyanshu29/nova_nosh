@@ -9,6 +9,7 @@ import UpdateMenu from "./AdminSide/EditMenu/UpdateMenu.jsx";
 import OrderList from "./AdminSide/Orders/OrderList.jsx";
 import OrderID from "./AdminSide/Orders/OrderId.jsx";
 import TableList from "./AdminSide/Table/TableList.jsx";
+import Members from "./AdminSide/Members/Members.jsx";
 function Profile() {
   const location = useLocation();
   const [tab, setTab] = useState("");
@@ -35,6 +36,7 @@ function Profile() {
           {tab === "orderList" && <OrderList/>}
          {tab === "orderId" && <OrderID/>}
          {tab === "tableList" && <TableList/>}
+         {tab === "customerList" && <Members/>}
          
         </div>
       )}

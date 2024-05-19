@@ -49,8 +49,9 @@ function Checkout() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const userID = currentUser?.message?.user?._id;
         if (currentAddress === null) {
-          const refreshRes = await fetch(`/api/auth/refreshToken`, {
+          const refreshRes = await fetch(`/api/auth/refreshToken?userID=${userID}`, {
             method: "GET",
             credentials: "include",
           });
@@ -122,6 +123,22 @@ function Checkout() {
   // Payment Gateway -> Razorpay
   const [order, setOrder] = useState(null);
   const handlePayment = async (e) => {
+    if(currentAddress === null){
+      setError("Please add an address to continue");
+      setTimeout(() => {
+        setError(null);
+      }
+      , 4000);
+      return;
+    }
+    if(orderId === null){
+      setError("Error while placing order");
+      setTimeout(() => {
+        setError(null);
+      }, 4000);
+      return;
+    }
+
     try {
         var options = {
           key: import.meta.env.VITE_RAZORPAY_KEY_ID,

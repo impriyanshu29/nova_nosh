@@ -109,10 +109,10 @@ export const sendEmail = async ({ email, emailType, userId }) => {
               </div>
               <div class="footer">
                 <div class="social-icons">
-                  <a href="https://www.facebook.com/YourCompany" target="_blank"><img width="52" height="52" src="https://img.icons8.com/color/48/facebook-new.png" alt="facebook"/></a>
-                  <a href="https://twitter.com/YourCompany" target="_blank"><img width="24" height="24" src="https://img.icons8.com/material-outlined/24/twitterx--v2.png" alt="twitter"/></a>
-                  <a href="https://www.linkedin.com/company/yourcompany" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn"></a>
-                  <a href="https://www.instagram.com/yourcompany" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram"></a>
+                  <a href="#" target="_blank"><img width="60" height="60" src="https://img.icons8.com/color/48/facebook-new.png" alt="facebook"/></a>
+                  <a href="https://x.com/iampriyanshu29" target="_blank"><img width="24" height="24" src="https://img.icons8.com/material-outlined/24/twitterx--v2.png" alt="twitter"/></a>
+                  <a href="https://www.instagram.com/iampriyanshu29/?next=%2F" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn"></a>
+                  <a href="https://www.linkedin.com/in/iampriyanshu29/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram"></a>
                 </div>
                 <p>For any assistance, please visit our <a href="${process.env.HELP_URL}">Help Center</a> or read our <a href="${process.env.PRIVACY_POLICY_URL}">Privacy Policy</a>.</p>
                 <p>&copy; ${new Date().getFullYear()} ${process.env.COMPANY_NAME}. All rights reserved.</p>

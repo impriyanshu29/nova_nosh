@@ -43,7 +43,7 @@ function Home() {
     setIsMenuOpen(!isMenuOpen);
   };
   const [isOpen, setIsOpen] = useState(
-    Array.from({ length: 3 }).map(() => false)
+    Array.from({ length: 4 }).map(() => false)
   );
 
   const toggleDropdown = (index) => {
@@ -56,7 +56,7 @@ function Home() {
     {
       question: "What are your restaurant's opening hours?",
       answer:
-        "Our restaurant is open from [opening time] to [closing time] on [days of the week].",
+        "Our restaurant is open from 9:00 AM to 8:00 PM on Tuesday to Sunday.",
     },
     {
       question: "Do you offer vegetarian/vegan options?",

@@ -42,17 +42,17 @@ function Footer() {
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-gray-600 hover:text-red-600">
+                    <a href="https://www.instagram.com/iampriyanshu29/?next=%2F" className="text-gray-600 hover:text-red-600">
                       <FaInstagram className="text-2xl" />
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-gray-600 hover:text-gray-100">
+                    <a href="https://x.com/iampriyanshu29" className="text-gray-600 hover:text-gray-100">
                       <FaXTwitter className="text-2xl" />
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-gray-600 hover:text-blue-700">
+                    <a href="https://www.linkedin.com/in/iampriyanshu29/" className="text-gray-600 hover:text-blue-700">
                       <AiFillLinkedin className="text-2xl" />
                     </a>
                   </li>
