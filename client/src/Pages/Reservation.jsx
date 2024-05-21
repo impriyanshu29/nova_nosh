@@ -25,9 +25,9 @@ function Reservation() {
   const handleChanges = (e) => {
     const {id, value} = e.target;
     setTable({...table, [id]: value,
-    userId: currentUser.message.user._id,
-    reservedBy: currentUser.message.user.firstName + " " + currentUser.message.user.lastName,
-    email: currentUser.message.user.email
+    userId: currentUser?.message?.user?._id,
+    reservedBy: currentUser?.message?.user?.firstName + " " + currentUser?.message?.user?.lastName,
+    email: currentUser?.message?.user?.email
 
     });
   }    
@@ -121,8 +121,8 @@ function Reservation() {
                         name="name"
                         disabled
                         
-                        placeholder= {currentUser.message.user.firstName + " " + currentUser.message.user.lastName}
-                        value = {currentUser.message.user.firstName + " " + currentUser.message.user.lastName}
+                        placeholder= {currentUser?.message?.user?.firstName + " " + currentUser?.message?.user?.lastName}
+                        value = {currentUser?.message?.user?.firstName + " " + currentUser?.message?.user?.lastName}
                         onChange={handleChanges}
                       />
                     </div>
@@ -135,8 +135,8 @@ function Reservation() {
                         type="email"
                         id="email"
                         name="email"
-                        placeholder= {currentUser.message.user.email}
-                        value = {currentUser.message.user.email}
+                        placeholder= {currentUser?.message?.user?.email}
+                        value = {currentUser?.message?.user?.email}
                         disabled
                         onChange={handleChanges}
                       />
